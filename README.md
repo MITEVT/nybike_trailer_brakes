@@ -1,4 +1,4 @@
-nybike_trailer_breaks
+nybike_trailer_brakes
 =====================
 
 EVT hardware and firmware for servo actuated trailer saftey brakes
