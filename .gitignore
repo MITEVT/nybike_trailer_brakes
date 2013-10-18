@@ -41,6 +41,9 @@ eagle.epf
 *.o
 *.ko
 
+# Map Files
+*.map
+
 # Libraries
 *.lib
 *.a
