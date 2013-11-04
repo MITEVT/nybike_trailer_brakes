@@ -1,8 +1,8 @@
 nybike_trailer_brakes
 =====================
 
-EVT hardware and firmware for servo actuated trailer saftey brakes.
-Takes input from some component and converts that to proper voltage for servo using an ATtiny85.
+EVT hardware and firmware for DC Motor actuated trailer saftey brakes.
+Takes input from some component and give power to motor in correct direction using an IC H Bridge and an ATtiny85
 
 Directory Structure
 ---------------------
