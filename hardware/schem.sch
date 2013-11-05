@@ -2198,12 +2198,24 @@ We've spent an enormous amount of time creating and checking these footprints an
 <net name="SCK" class="0">
 <segment>
 <pinref part="U2" gate="G$1" pin="PB2(SCK/ADC1)"/>
-<wire x1="86.36" y1="45.72" x2="88.9" y2="45.72" width="0.1524" layer="91"/>
 <label x="88.9" y="45.72" size="1.778" layer="95"/>
+<wire x1="86.36" y1="45.72" x2="101.6" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="101.6" y1="45.72" x2="101.6" y2="40.64" width="0.1524" layer="91"/>
+<pinref part="IC2" gate="G$1" pin="IN1"/>
+<wire x1="101.6" y1="40.64" x2="106.68" y2="40.64" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="ISP1" gate="G$1" pin="SCK"/>
 <wire x1="81.28" y1="96.52" x2="78.74" y2="96.52" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$2" class="0">
+<segment>
+<pinref part="U2" gate="G$1" pin="PB4(ADC2)"/>
+<wire x1="86.36" y1="40.64" x2="99.06" y2="40.64" width="0.1524" layer="91"/>
+<wire x1="99.06" y1="40.64" x2="99.06" y2="35.56" width="0.1524" layer="91"/>
+<pinref part="IC2" gate="G$1" pin="IN2"/>
+<wire x1="99.06" y1="35.56" x2="106.68" y2="35.56" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
