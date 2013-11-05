@@ -365,8 +365,8 @@ UsedLibrary="/Users/Eric/Dropbox/EVT/Projects/EVT-Eagle-Library/EVT-Eagle-Librar
 
 [Win_1]
 Type="Control Panel"
-Loc="0 22 599 421"
-State=1
+Loc="360 248 959 647"
+State=2
 Number=0
 
 [Desktop]
