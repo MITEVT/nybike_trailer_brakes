@@ -2,24 +2,24 @@ EAGLE AutoRouter Statistics:
 
 Job           : /Users/narango/EVT/nybike_trailer_brakes/hardware/schem.brd
 
-Start at      : 21:43:41 (11/4/13)
-End at        : 21:43:42 (11/4/13)
-Elapsed time  : 00:00:01
+Start at      : 10:40:37 (11/6/13)
+End at        : 10:40:39 (11/6/13)
+Elapsed time  : 00:00:02
 
 Signals       :    11   RoutingGrid: 50 mil  Layers: 1
-Connections   :    17   predefined:  0 ( 0 Vias )
+Connections   :    22   predefined:  0 ( 0 Vias )
 
-Router memory :   2772
+Router memory :   7300
 
 Passname          :     Route Optimize1 Optimize2 Optimize3 Optimize4
 
-Time per pass     :  00:00:01  00:00:00  00:00:00  00:00:00  00:00:00
-Number of Ripups  :       220         0         0         0         0
-max. Level        :         5         0         0         0         0
+Time per pass     :  00:00:02  00:00:00  00:00:00  00:00:00  00:00:00
+Number of Ripups  :       424         0         0         0         0
+max. Level        :         4         0         0         0         0
 max. Total        :         9         0         0         0         0
 
-Routed            :        14        14        14        14        14
+Routed            :        18        18        18        18        18
 Vias              :         0         0         0         0         0
-Resolution        :    82.4 %    82.4 %    82.4 %    82.4 %    82.4 %
+Resolution        :    81.8 %    81.8 %    81.8 %    81.8 %    81.8 %
 
-Final             : 82.4% finished
+Final             : 81.8% finished
