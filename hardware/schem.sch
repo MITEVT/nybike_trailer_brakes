@@ -10719,7 +10719,7 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <part name="P+5" library="supply1" deviceset="+5V" device=""/>
 <part name="P+6" library="supply1" deviceset="+12V" device=""/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
-<part name="U1" library="SparkFun-DigitalIC" deviceset="ATTINY45" device="TINY45-20-DIP" value="TINY45-20-DIP"/>
+<part name="U1" library="SparkFun-DigitalIC" deviceset="ATTINY45" device="TINY45-20-DIP" value="TINY45"/>
 <part name="12V" library="wirepad" deviceset="3,81/1,3" device=""/>
 <part name="GND" library="wirepad" deviceset="3,81/1,3" device=""/>
 <part name="INP" library="wirepad" deviceset="2,15/1,0" device="" value="INP"/>
