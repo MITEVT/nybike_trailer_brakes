@@ -10720,11 +10720,11 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <part name="P+6" library="supply1" deviceset="+12V" device=""/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
 <part name="U1" library="SparkFun-DigitalIC" deviceset="ATTINY45" device="TINY45-20-DIP" value="TINY45-20-DIP"/>
-<part name="PAD3" library="wirepad" deviceset="3,81/1,3" device=""/>
-<part name="PAD4" library="wirepad" deviceset="3,81/1,3" device=""/>
-<part name="PAD5" library="wirepad" deviceset="2,15/1,0" device=""/>
-<part name="PAD1" library="wirepad" deviceset="3,81/1,3" device=""/>
-<part name="PAD2" library="wirepad" deviceset="3,81/1,3" device=""/>
+<part name="12V" library="wirepad" deviceset="3,81/1,3" device=""/>
+<part name="GND" library="wirepad" deviceset="3,81/1,3" device=""/>
+<part name="INP" library="wirepad" deviceset="2,15/1,0" device="" value="INP"/>
+<part name="M+" library="wirepad" deviceset="3,81/1,3" device=""/>
+<part name="M-" library="wirepad" deviceset="3,81/1,3" device=""/>
 <part name="Q5" library="transistor-power" deviceset="IRF9530" device=""/>
 <part name="Q6" library="transistor-power" deviceset="IRF9530" device=""/>
 <part name="Q1" library="transistor-power" deviceset="IRF512" device=""/>
@@ -10752,11 +10752,11 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <instance part="P+6" gate="1" x="132.08" y="73.66"/>
 <instance part="GND5" gate="1" x="132.08" y="27.94"/>
 <instance part="U1" gate="G$1" x="63.5" y="38.1"/>
-<instance part="PAD3" gate="1" x="114.3" y="91.44"/>
-<instance part="PAD4" gate="1" x="114.3" y="86.36"/>
-<instance part="PAD5" gate="1" x="147.32" y="88.9"/>
-<instance part="PAD1" gate="1" x="127" y="55.88" rot="R270"/>
-<instance part="PAD2" gate="1" x="134.62" y="55.88" rot="R270"/>
+<instance part="12V" gate="1" x="114.3" y="91.44"/>
+<instance part="GND" gate="1" x="114.3" y="83.82"/>
+<instance part="INP" gate="1" x="147.32" y="88.9"/>
+<instance part="M+" gate="1" x="127" y="55.88" rot="R270"/>
+<instance part="M-" gate="1" x="134.62" y="55.88" rot="R270"/>
 <instance part="Q5" gate="G$1" x="116.84" y="60.96"/>
 <instance part="Q6" gate="G$1" x="147.32" y="60.96" rot="MR0"/>
 <instance part="Q1" gate="1" x="116.84" y="40.64"/>
@@ -10773,7 +10773,7 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <wire x1="119.38" y1="55.88" x2="119.38" y2="50.8" width="0.1524" layer="91"/>
 <wire x1="119.38" y1="50.8" x2="127" y2="50.8" width="0.1524" layer="91"/>
 <wire x1="127" y1="50.8" x2="127" y2="53.34" width="0.1524" layer="91"/>
-<pinref part="PAD1" gate="1" pin="P"/>
+<pinref part="M+" gate="1" pin="P"/>
 <wire x1="119.38" y1="50.8" x2="119.38" y2="45.72" width="0.1524" layer="91"/>
 <junction x="119.38" y="50.8"/>
 <pinref part="Q5" gate="G$1" pin="D"/>
@@ -10784,7 +10784,7 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <segment>
 <wire x1="132.08" y1="91.44" x2="132.08" y2="96.52" width="0.1524" layer="91"/>
 <pinref part="P+1" gate="1" pin="+12V"/>
-<pinref part="PAD3" gate="1" pin="P"/>
+<pinref part="12V" gate="1" pin="P"/>
 <wire x1="116.84" y1="91.44" x2="132.08" y2="91.44" width="0.1524" layer="91"/>
 </segment>
 <segment>
@@ -10810,9 +10810,8 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <segment>
 <pinref part="GND1" gate="1" pin="GND"/>
 <wire x1="132.08" y1="83.82" x2="132.08" y2="81.28" width="0.1524" layer="91"/>
-<pinref part="PAD4" gate="1" pin="P"/>
-<wire x1="116.84" y1="86.36" x2="132.08" y2="86.36" width="0.1524" layer="91"/>
-<wire x1="132.08" y1="86.36" x2="132.08" y2="83.82" width="0.1524" layer="91"/>
+<pinref part="GND" gate="1" pin="P"/>
+<wire x1="116.84" y1="83.82" x2="132.08" y2="83.82" width="0.1524" layer="91"/>
 <junction x="132.08" y="83.82"/>
 </segment>
 <segment>
@@ -10854,7 +10853,7 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <segment>
 <wire x1="149.86" y1="88.9" x2="154.94" y2="88.9" width="0.1524" layer="91"/>
 <label x="154.94" y="88.9" size="1.778" layer="95" xref="yes"/>
-<pinref part="PAD5" gate="1" pin="P"/>
+<pinref part="INP" gate="1" pin="P"/>
 </segment>
 <segment>
 <label x="81.28" y="45.72" size="1.778" layer="95"/>
@@ -10960,7 +10959,7 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <wire x1="134.62" y1="53.34" x2="134.62" y2="50.8" width="0.1524" layer="91"/>
 <wire x1="134.62" y1="50.8" x2="144.78" y2="50.8" width="0.1524" layer="91"/>
 <junction x="144.78" y="50.8"/>
-<pinref part="PAD2" gate="1" pin="P"/>
+<pinref part="M-" gate="1" pin="P"/>
 <pinref part="Q6" gate="G$1" pin="D"/>
 <pinref part="Q2" gate="1" pin="D"/>
 </segment>
