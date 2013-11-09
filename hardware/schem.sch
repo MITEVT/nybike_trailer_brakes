@@ -7137,7 +7137,7 @@ Production Part - 8199
 <part name="P+3" library="supply1" deviceset="+12V" device=""/>
 <part name="P+4" library="supply1" deviceset="+5V" device=""/>
 <part name="GND2" library="supply1" deviceset="GND" device=""/>
-<part name="U2" library="SparkFun-DigitalIC" deviceset="ATTINY45" device="TINY85-20-DIP" value="TINY85-20-DIP"/>
+<part name="TINY85" library="SparkFun-DigitalIC" deviceset="ATTINY45" device="TINY85-20-DIP" value="TINY85"/>
 <part name="GND4" library="supply1" deviceset="GND" device=""/>
 <part name="P+5" library="supply1" deviceset="+5V" device=""/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
@@ -7177,7 +7177,7 @@ Production Part - 8199
 <instance part="P+3" gate="1" x="149.86" y="106.68"/>
 <instance part="P+4" gate="1" x="180.34" y="106.68"/>
 <instance part="GND2" gate="1" x="165.1" y="86.36"/>
-<instance part="U2" gate="G$1" x="73.66" y="43.18"/>
+<instance part="TINY85" gate="G$1" x="73.66" y="43.18"/>
 <instance part="GND4" gate="1" x="111.76" y="86.36"/>
 <instance part="P+5" gate="1" x="111.76" y="106.68"/>
 <instance part="GND5" gate="1" x="55.88" y="30.48"/>
@@ -7280,7 +7280,7 @@ Production Part - 8199
 <pinref part="GND4" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="U2" gate="G$1" pin="GND"/>
+<pinref part="TINY85" gate="G$1" pin="GND"/>
 <wire x1="58.42" y1="38.1" x2="55.88" y2="38.1" width="0.1524" layer="91"/>
 <wire x1="55.88" y1="38.1" x2="55.88" y2="33.02" width="0.1524" layer="91"/>
 <pinref part="GND5" gate="1" pin="GND"/>
@@ -7342,7 +7342,7 @@ Production Part - 8199
 <pinref part="P+5" gate="1" pin="+5V"/>
 </segment>
 <segment>
-<pinref part="U2" gate="G$1" pin="VCC"/>
+<pinref part="TINY85" gate="G$1" pin="VCC"/>
 <wire x1="58.42" y1="50.8" x2="55.88" y2="50.8" width="0.1524" layer="91"/>
 <wire x1="55.88" y1="50.8" x2="55.88" y2="55.88" width="0.1524" layer="91"/>
 <pinref part="P+6" gate="1" pin="+5V"/>
@@ -7358,7 +7358,7 @@ Production Part - 8199
 </net>
 <net name="INP" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="PB3(ADC3)"/>
+<pinref part="TINY85" gate="G$1" pin="PB3(ADC3)"/>
 <wire x1="86.36" y1="43.18" x2="88.9" y2="43.18" width="0.1524" layer="91"/>
 <label x="88.9" y="43.18" size="1.778" layer="95"/>
 </segment>
@@ -7374,14 +7374,14 @@ Production Part - 8199
 <wire x1="109.22" y1="96.52" x2="111.76" y2="96.52" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="U2" gate="G$1" pin="PB0(MOSI)"/>
+<pinref part="TINY85" gate="G$1" pin="PB0(MOSI)"/>
 <wire x1="86.36" y1="50.8" x2="88.9" y2="50.8" width="0.1524" layer="91"/>
 <label x="88.9" y="50.8" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="MISO" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="PB1(MISO)"/>
+<pinref part="TINY85" gate="G$1" pin="PB1(MISO)"/>
 <wire x1="86.36" y1="48.26" x2="88.9" y2="48.26" width="0.1524" layer="91"/>
 <label x="88.9" y="48.26" size="1.778" layer="95"/>
 </segment>
@@ -7401,7 +7401,7 @@ Production Part - 8199
 </net>
 <net name="RST" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="PB5(NRES)"/>
+<pinref part="TINY85" gate="G$1" pin="PB5(NRES)"/>
 <wire x1="86.36" y1="38.1" x2="88.9" y2="38.1" width="0.1524" layer="91"/>
 <label x="88.9" y="38.1" size="1.778" layer="95"/>
 </segment>
@@ -7416,7 +7416,7 @@ Production Part - 8199
 <wire x1="81.28" y1="96.52" x2="78.74" y2="96.52" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="U2" gate="G$1" pin="PB2(SCK/ADC1)"/>
+<pinref part="TINY85" gate="G$1" pin="PB2(SCK/ADC1)"/>
 <wire x1="86.36" y1="45.72" x2="88.9" y2="45.72" width="0.1524" layer="91"/>
 <label x="88.9" y="45.72" size="1.778" layer="95"/>
 </segment>
@@ -7479,7 +7479,7 @@ Production Part - 8199
 </net>
 <net name="IN2" class="0">
 <segment>
-<pinref part="U2" gate="G$1" pin="PB4(ADC2)"/>
+<pinref part="TINY85" gate="G$1" pin="PB4(ADC2)"/>
 <wire x1="86.36" y1="40.64" x2="88.9" y2="40.64" width="0.1524" layer="91"/>
 <label x="88.9" y="40.64" size="1.778" layer="95"/>
 </segment>
