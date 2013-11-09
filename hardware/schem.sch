@@ -7158,10 +7158,10 @@ Production Part - 8199
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="R1" library="SparkFun-Passives" deviceset="RESISTOR" device="PTH-1/4W"/>
-<part name="D1" library="SparkFun-DiscreteSemi" deviceset="DIODE-ZENER" device="PTH"/>
-<part name="D2" library="SparkFun-DiscreteSemi" deviceset="DIODE-ZENER" device="PTH"/>
-<part name="D3" library="SparkFun-DiscreteSemi" deviceset="DIODE-ZENER" device="PTH"/>
-<part name="D4" library="SparkFun-DiscreteSemi" deviceset="DIODE-ZENER" device="PTH"/>
+<part name="DIODE1" library="SparkFun-DiscreteSemi" deviceset="DIODE-ZENER" device="PTH"/>
+<part name="DIODE2" library="SparkFun-DiscreteSemi" deviceset="DIODE-ZENER" device="PTH"/>
+<part name="DIODE3" library="SparkFun-DiscreteSemi" deviceset="DIODE-ZENER" device="PTH"/>
+<part name="DIODE4" library="SparkFun-DiscreteSemi" deviceset="DIODE-ZENER" device="PTH"/>
 <part name="P+8" library="supply1" deviceset="+12V" device=""/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
 </parts>
@@ -7207,16 +7207,16 @@ Production Part - 8199
 <instance part="GND6" gate="1" x="182.88" y="10.16"/>
 <instance part="GND7" gate="1" x="127" y="-12.7"/>
 <instance part="R1" gate="G$1" x="170.18" y="12.7"/>
-<instance part="D1" gate="G$1" x="139.7" y="66.04" smashed="yes" rot="R90">
+<instance part="DIODE1" gate="G$1" x="139.7" y="66.04" smashed="yes" rot="R90">
 <attribute name="NAME" x="139.2174" y="68.58" size="1.778" layer="95" rot="R90"/>
 </instance>
-<instance part="D2" gate="G$1" x="139.7" y="50.8" smashed="yes" rot="R90">
+<instance part="DIODE2" gate="G$1" x="139.7" y="50.8" smashed="yes" rot="R90">
 <attribute name="NAME" x="139.2174" y="53.34" size="1.778" layer="95" rot="R90"/>
 </instance>
-<instance part="D3" gate="G$1" x="165.1" y="66.04" smashed="yes" rot="R90">
+<instance part="DIODE3" gate="G$1" x="165.1" y="66.04" smashed="yes" rot="R90">
 <attribute name="NAME" x="164.6174" y="68.58" size="1.778" layer="95" rot="R90"/>
 </instance>
-<instance part="D4" gate="G$1" x="165.1" y="50.8" smashed="yes" rot="R90">
+<instance part="DIODE4" gate="G$1" x="165.1" y="50.8" smashed="yes" rot="R90">
 <attribute name="NAME" x="164.6174" y="53.34" size="1.778" layer="95" rot="R90"/>
 </instance>
 <instance part="P+8" gate="1" x="152.4" y="78.74"/>
@@ -7251,12 +7251,12 @@ Production Part - 8199
 <junction x="167.64" y="20.32"/>
 </segment>
 <segment>
-<pinref part="D3" gate="G$1" pin="C"/>
+<pinref part="DIODE3" gate="G$1" pin="C"/>
 <wire x1="165.1" y1="68.58" x2="165.1" y2="71.12" width="0.1524" layer="91"/>
 <wire x1="165.1" y1="71.12" x2="152.4" y2="71.12" width="0.1524" layer="91"/>
 <wire x1="152.4" y1="71.12" x2="152.4" y2="76.2" width="0.1524" layer="91"/>
 <pinref part="P+8" gate="1" pin="+12V"/>
-<pinref part="D1" gate="G$1" pin="C"/>
+<pinref part="DIODE1" gate="G$1" pin="C"/>
 <wire x1="139.7" y1="68.58" x2="139.7" y2="71.12" width="0.1524" layer="91"/>
 <wire x1="152.4" y1="71.12" x2="139.7" y2="71.12" width="0.1524" layer="91"/>
 <junction x="152.4" y="71.12"/>
@@ -7313,9 +7313,9 @@ Production Part - 8199
 <pinref part="GND7" gate="1" pin="GND"/>
 </segment>
 <segment>
-<pinref part="D4" gate="G$1" pin="A"/>
+<pinref part="DIODE4" gate="G$1" pin="A"/>
 <wire x1="165.1" y1="48.26" x2="165.1" y2="45.72" width="0.1524" layer="91"/>
-<pinref part="D2" gate="G$1" pin="A"/>
+<pinref part="DIODE2" gate="G$1" pin="A"/>
 <wire x1="139.7" y1="48.26" x2="139.7" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="165.1" y1="45.72" x2="152.4" y2="45.72" width="0.1524" layer="91"/>
 <pinref part="GND8" gate="1" pin="GND"/>
@@ -7438,11 +7438,11 @@ Production Part - 8199
 <segment>
 <pinref part="MOTOR-" gate="1" pin="P"/>
 <wire x1="157.48" y1="58.42" x2="165.1" y2="58.42" width="0.1524" layer="91"/>
-<pinref part="D3" gate="G$1" pin="A"/>
+<pinref part="DIODE3" gate="G$1" pin="A"/>
 <wire x1="165.1" y1="58.42" x2="175.26" y2="58.42" width="0.1524" layer="91"/>
 <wire x1="165.1" y1="63.5" x2="165.1" y2="58.42" width="0.1524" layer="91"/>
 <junction x="165.1" y="58.42"/>
-<pinref part="D4" gate="G$1" pin="C"/>
+<pinref part="DIODE4" gate="G$1" pin="C"/>
 <wire x1="165.1" y1="58.42" x2="165.1" y2="53.34" width="0.1524" layer="91"/>
 <label x="175.26" y="58.42" size="1.778" layer="95" xref="yes"/>
 </segment>
@@ -7458,11 +7458,11 @@ Production Part - 8199
 <segment>
 <pinref part="MOTOR+" gate="1" pin="P"/>
 <wire x1="147.32" y1="58.42" x2="139.7" y2="58.42" width="0.1524" layer="91"/>
-<pinref part="D2" gate="G$1" pin="C"/>
+<pinref part="DIODE2" gate="G$1" pin="C"/>
 <wire x1="139.7" y1="58.42" x2="132.08" y2="58.42" width="0.1524" layer="91"/>
 <wire x1="139.7" y1="53.34" x2="139.7" y2="58.42" width="0.1524" layer="91"/>
 <junction x="139.7" y="58.42"/>
-<pinref part="D1" gate="G$1" pin="A"/>
+<pinref part="DIODE1" gate="G$1" pin="A"/>
 <wire x1="139.7" y1="58.42" x2="139.7" y2="63.5" width="0.1524" layer="91"/>
 <label x="132.08" y="58.42" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
