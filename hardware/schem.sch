@@ -7131,7 +7131,7 @@ Production Part - 8199
 </classes>
 <parts>
 <part name="IC1" library="linear" deviceset="78*" device="L" technology="05"/>
-<part name="ISP1" library="adafruit" deviceset="AVRISP" device="-6"/>
+<part name="PRG" library="adafruit" deviceset="AVRISP" device="-6"/>
 <part name="P+1" library="supply1" deviceset="+12V" device=""/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
 <part name="P+3" library="supply1" deviceset="+12V" device=""/>
@@ -7171,7 +7171,7 @@ Production Part - 8199
 </plain>
 <instances>
 <instance part="IC1" gate="A1" x="165.1" y="99.06"/>
-<instance part="ISP1" gate="G$1" x="93.98" y="96.52"/>
+<instance part="PRG" gate="G$1" x="93.98" y="96.52"/>
 <instance part="P+1" gate="1" x="137.16" y="106.68"/>
 <instance part="GND1" gate="1" x="144.78" y="91.44"/>
 <instance part="P+3" gate="1" x="149.86" y="106.68"/>
@@ -7274,7 +7274,7 @@ Production Part - 8199
 <wire x1="165.1" y1="88.9" x2="177.8" y2="88.9" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="ISP1" gate="G$1" pin="GND"/>
+<pinref part="PRG" gate="G$1" pin="GND"/>
 <wire x1="109.22" y1="93.98" x2="111.76" y2="93.98" width="0.1524" layer="91"/>
 <wire x1="111.76" y1="93.98" x2="111.76" y2="88.9" width="0.1524" layer="91"/>
 <pinref part="GND4" gate="1" pin="GND"/>
@@ -7336,7 +7336,7 @@ Production Part - 8199
 <junction x="177.8" y="99.06"/>
 </segment>
 <segment>
-<pinref part="ISP1" gate="G$1" pin="VCC"/>
+<pinref part="PRG" gate="G$1" pin="VCC"/>
 <wire x1="109.22" y1="99.06" x2="111.76" y2="99.06" width="0.1524" layer="91"/>
 <wire x1="111.76" y1="99.06" x2="111.76" y2="104.14" width="0.1524" layer="91"/>
 <pinref part="P+5" gate="1" pin="+5V"/>
@@ -7370,7 +7370,7 @@ Production Part - 8199
 </net>
 <net name="MOSI" class="0">
 <segment>
-<pinref part="ISP1" gate="G$1" pin="MOSI"/>
+<pinref part="PRG" gate="G$1" pin="MOSI"/>
 <wire x1="109.22" y1="96.52" x2="111.76" y2="96.52" width="0.1524" layer="91"/>
 </segment>
 <segment>
@@ -7386,7 +7386,7 @@ Production Part - 8199
 <label x="88.9" y="48.26" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="ISP1" gate="G$1" pin="MISO"/>
+<pinref part="PRG" gate="G$1" pin="MISO"/>
 <wire x1="78.74" y1="99.06" x2="81.28" y2="99.06" width="0.1524" layer="91"/>
 </segment>
 <segment>
@@ -7406,13 +7406,13 @@ Production Part - 8199
 <label x="88.9" y="38.1" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="ISP1" gate="G$1" pin="RST"/>
+<pinref part="PRG" gate="G$1" pin="RST"/>
 <wire x1="81.28" y1="93.98" x2="78.74" y2="93.98" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SCK" class="0">
 <segment>
-<pinref part="ISP1" gate="G$1" pin="SCK"/>
+<pinref part="PRG" gate="G$1" pin="SCK"/>
 <wire x1="81.28" y1="96.52" x2="78.74" y2="96.52" width="0.1524" layer="91"/>
 </segment>
 <segment>
