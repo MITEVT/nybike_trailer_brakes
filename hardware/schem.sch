@@ -7397,6 +7397,7 @@ Production Part - 8199
 <wire x1="119.38" y1="0" x2="132.08" y2="0" width="0.1524" layer="91"/>
 <junction x="119.38" y="7.62"/>
 <label x="114.3" y="7.62" size="1.778" layer="95"/>
+<wire x1="119.38" y1="7.62" x2="114.3" y2="7.62" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="RST" class="0">
@@ -7421,12 +7422,12 @@ Production Part - 8199
 <label x="88.9" y="45.72" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="IC2" gate="L298" pin="ENABLE_A"/>
-<pinref part="IC2" gate="L298" pin="ENABLE_B"/>
-<wire x1="132.08" y1="15.24" x2="132.08" y2="12.7" width="0.1524" layer="91"/>
-<wire x1="132.08" y1="15.24" x2="124.46" y2="15.24" width="0.1524" layer="91"/>
-<junction x="132.08" y="15.24"/>
-<label x="124.46" y="15.24" size="1.778" layer="95"/>
+<pinref part="IC2" gate="L298" pin="INPUT3"/>
+<pinref part="IC2" gate="L298" pin="INPUT2"/>
+<wire x1="132.08" y1="2.54" x2="132.08" y2="5.08" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="5.08" x2="129.54" y2="5.08" width="0.1524" layer="91"/>
+<junction x="132.08" y="5.08"/>
+<label x="124.46" y="5.08" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="OUT2" class="0">
@@ -7477,19 +7478,19 @@ Production Part - 8199
 <pinref part="R1" gate="G$1" pin="1"/>
 </segment>
 </net>
-<net name="IN2" class="0">
+<net name="ENA" class="0">
+<segment>
+<pinref part="IC2" gate="L298" pin="ENABLE_A"/>
+<pinref part="IC2" gate="L298" pin="ENABLE_B"/>
+<wire x1="132.08" y1="15.24" x2="132.08" y2="12.7" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="15.24" x2="124.46" y2="15.24" width="0.1524" layer="91"/>
+<junction x="132.08" y="15.24"/>
+<label x="124.46" y="15.24" size="1.778" layer="95"/>
+</segment>
 <segment>
 <pinref part="TINY85" gate="G$1" pin="PB4(ADC2)"/>
 <wire x1="86.36" y1="40.64" x2="88.9" y2="40.64" width="0.1524" layer="91"/>
 <label x="88.9" y="40.64" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="IC2" gate="L298" pin="INPUT3"/>
-<pinref part="IC2" gate="L298" pin="INPUT2"/>
-<wire x1="132.08" y1="2.54" x2="132.08" y2="5.08" width="0.1524" layer="91"/>
-<wire x1="132.08" y1="5.08" x2="129.54" y2="5.08" width="0.1524" layer="91"/>
-<junction x="132.08" y="5.08"/>
-<label x="124.46" y="5.08" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
