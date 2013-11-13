@@ -11,7 +11,9 @@
 #define ISense 
 
 //PWM defines
-#define PWM_OVERFLOW 159;
+#define PWM_OVERFLOW 159
+#define CLOSE_DUTY 30
+#define OPEN_DUTY 30
 
 typedef struct Input {
 	int bI; //button Input on or off stored in the first bit
@@ -21,38 +23,47 @@ typedef struct Input {
 
 void setEnableDuty(uint8_t dutyCycle){
 	if (dutyCycle > PWM_OVERFLOW){
-		dutyCycle = PWM_OVERFLOW
+		dutyCycle = PWM_OVERFLOW;
 	}
-	OCR1B = dutyCycle
+	OCR1B = dutyCycle;
 }
 
-void getSwitchInput(void){
+uint8_t getSwitchInput(void){
 	uint8_t switchIn = PINB & (1 << INPUT);
 	return switchIn;
 }
 
-void getMCurrent(void){
-
+uint8_t getMCurrent(void){
+	return 0;
 }
 
-
-void setMotorDir(motorCommand cmd){
+void closeBrake(uint8_t speed) {
+	setEnableDuty(0); //kill the output in case switching is dangerous
+	PORTB |= (1 << OUT1);
+	PORTB &= ~(1 << OUT2);
+	setEnableDuty(speed); //start the output again
 }
 
-void closeBrake(void) {
-}
-
-void openBrake(void) {
+void openBrake(uint8_t speed) {
+	setEnableDuty(0); //kill the output in case switching is dangerous
+	PORTB &= ~(1 << OUT1);
+	PORTB |= (1 << OUT2);
+	setEnableDuty(speed); //start the motor controller output again
 }
 
 void stopBrake(void) {
+	setEnableDuty(0); //kil the output
+	//TODO: is sohould we brake the motor or can we leave this be
 }
 
 Input getInput(void){
-
+	Input in;
+	in.bI = getSwitchInput();
+	in.mI = getMCurrent();
+	return in;
 }
 
-void getNextState(brakeState state, int input, smResult * result){
+void getNextState(void){
 	//passes struct of new state and function pointer for action
 }
 
@@ -66,13 +77,14 @@ void initTimers(void) {
 	//PLL Control and status
 	PLLCSR |= (1 << PCKE) | (1 << PLLE);
 	//When to "overflow"
-	OCR1C = overflow;
+	OCR1C = PWM_OVERFLOW;
 	//When to clear
-	OCR1B = pwm;
+	//don't output anything till we are ready
+	OCR1B = 0;
 }
 
 void adcInit(void) {
-	ADCMUX |= 
+	//ADCMUX |= 
 }
 
 void initIO(void) {
