@@ -16,10 +16,29 @@
 #define OPEN_DUTY 30
 
 typedef struct Input {
-	int bI; //button Input on or off stored in the first bit
-	int mI; //motor Input 8 bit value corelated with motor current
-
+	uint8_t bI; //button Input on or off stored in the first bit
+	uint8_t mI; //motor Input 8 bit value corelated with motor current
 } Input;
+
+typedef enum {
+	OPEN,
+	OPENING,
+	CLOSED,
+	CLOSING
+ } moveState;
+
+typedef struct State {
+	uint8_t count;
+	moveState state;
+} State; 
+
+State a;
+State * b;
+
+typedef struct Action {
+	movState newState;
+	void * actPointer(void);
+} Action;
 
 void setEnableDuty(uint8_t dutyCycle){
 	if (dutyCycle > PWM_OVERFLOW){
@@ -33,6 +52,8 @@ uint8_t getSwitchInput(void){
 	return switchIn;
 }
 
+
+//blocking untill conversion finish
 uint8_t getMCurrent(void){
 	return 0;
 }
@@ -42,6 +63,7 @@ void closeBrake(uint8_t speed) {
 	PORTB |= (1 << OUT1);
 	PORTB &= ~(1 << OUT2);
 	setEnableDuty(speed); //start the output again
+	a
 }
 
 void openBrake(uint8_t speed) {
@@ -52,7 +74,7 @@ void openBrake(uint8_t speed) {
 }
 
 void stopBrake(void) {
-	setEnableDuty(0); //kil the output
+	setEnableDuty(0); //kill the output
 	//TODO: is sohould we brake the motor or can we leave this be
 }
 
@@ -63,8 +85,10 @@ Input getInput(void){
 	return in;
 }
 
-void getNextState(void){
+void getNextState(Input * in, State * state, Action * newAct){
 	//passes struct of new state and function pointer for action
+
+	newAct->newState = newState;
 }
 
 void initTimers(void) {
@@ -107,11 +131,15 @@ void init(void) {
 }
 
 int main (void){
+
+	int a = 10;
+	int* b = &a;
+	*b = 20;
+	a
 	
 	init();
 
 	while(1) {
-		
 		
 	}
 }
