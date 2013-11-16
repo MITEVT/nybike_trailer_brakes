@@ -7379,13 +7379,12 @@ Production Part - 8199
 <label x="88.9" y="50.8" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="IC2" gate="L298" pin="SEN_A"/>
-<pinref part="IC2" gate="L298" pin="SEN_B"/>
-<wire x1="162.56" y1="15.24" x2="162.56" y2="12.7" width="0.1524" layer="91"/>
-<wire x1="162.56" y1="12.7" x2="170.18" y2="12.7" width="0.1524" layer="91"/>
-<junction x="162.56" y="12.7"/>
-<pinref part="R1" gate="G$1" pin="1"/>
-<label x="165.1" y="12.7" size="1.778" layer="95"/>
+<pinref part="IC2" gate="L298" pin="INPUT3"/>
+<pinref part="IC2" gate="L298" pin="INPUT2"/>
+<wire x1="132.08" y1="2.54" x2="132.08" y2="5.08" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="5.08" x2="129.54" y2="5.08" width="0.1524" layer="91"/>
+<junction x="132.08" y="5.08"/>
+<label x="124.46" y="5.08" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="MISO" class="0">
@@ -7431,12 +7430,13 @@ Production Part - 8199
 <label x="88.9" y="45.72" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="IC2" gate="L298" pin="INPUT3"/>
-<pinref part="IC2" gate="L298" pin="INPUT2"/>
-<wire x1="132.08" y1="2.54" x2="132.08" y2="5.08" width="0.1524" layer="91"/>
-<wire x1="132.08" y1="5.08" x2="129.54" y2="5.08" width="0.1524" layer="91"/>
-<junction x="132.08" y="5.08"/>
-<label x="124.46" y="5.08" size="1.778" layer="95"/>
+<pinref part="IC2" gate="L298" pin="SEN_A"/>
+<pinref part="IC2" gate="L298" pin="SEN_B"/>
+<wire x1="162.56" y1="15.24" x2="162.56" y2="12.7" width="0.1524" layer="91"/>
+<wire x1="162.56" y1="12.7" x2="170.18" y2="12.7" width="0.1524" layer="91"/>
+<junction x="162.56" y="12.7"/>
+<pinref part="R1" gate="G$1" pin="1"/>
+<label x="165.1" y="12.7" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="OUT2" class="0">
