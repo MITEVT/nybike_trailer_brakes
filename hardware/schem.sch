@@ -7206,7 +7206,7 @@ Production Part - 8199
 <instance part="C4" gate="G$1" x="172.72" y="20.32" rot="R90"/>
 <instance part="GND6" gate="1" x="182.88" y="10.16"/>
 <instance part="GND7" gate="1" x="127" y="-12.7"/>
-<instance part="R1" gate="G$1" x="170.18" y="12.7"/>
+<instance part="R1" gate="G$1" x="175.26" y="12.7"/>
 <instance part="DIODE1" gate="G$1" x="139.7" y="66.04" smashed="yes" rot="R90">
 <attribute name="NAME" x="139.2174" y="68.58" size="1.778" layer="95" rot="R90"/>
 </instance>
@@ -7303,7 +7303,7 @@ Production Part - 8199
 <wire x1="182.88" y1="20.32" x2="182.88" y2="12.7" width="0.1524" layer="91"/>
 <pinref part="GND6" gate="1" pin="GND"/>
 <pinref part="R1" gate="G$1" pin="2"/>
-<wire x1="175.26" y1="12.7" x2="182.88" y2="12.7" width="0.1524" layer="91"/>
+<wire x1="180.34" y1="12.7" x2="182.88" y2="12.7" width="0.1524" layer="91"/>
 <junction x="182.88" y="12.7"/>
 </segment>
 <segment>
@@ -7377,6 +7377,15 @@ Production Part - 8199
 <pinref part="TINY85" gate="G$1" pin="PB0(MOSI)"/>
 <wire x1="86.36" y1="50.8" x2="88.9" y2="50.8" width="0.1524" layer="91"/>
 <label x="88.9" y="50.8" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="IC2" gate="L298" pin="SEN_A"/>
+<pinref part="IC2" gate="L298" pin="SEN_B"/>
+<wire x1="162.56" y1="15.24" x2="162.56" y2="12.7" width="0.1524" layer="91"/>
+<wire x1="162.56" y1="12.7" x2="170.18" y2="12.7" width="0.1524" layer="91"/>
+<junction x="162.56" y="12.7"/>
+<pinref part="R1" gate="G$1" pin="1"/>
+<label x="165.1" y="12.7" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="MISO" class="0">
@@ -7466,16 +7475,6 @@ Production Part - 8199
 <pinref part="DIODE1" gate="G$1" pin="A"/>
 <wire x1="139.7" y1="58.42" x2="139.7" y2="63.5" width="0.1524" layer="91"/>
 <label x="132.08" y="58.42" size="1.778" layer="95" rot="R180" xref="yes"/>
-</segment>
-</net>
-<net name="N$1" class="0">
-<segment>
-<pinref part="IC2" gate="L298" pin="SEN_A"/>
-<pinref part="IC2" gate="L298" pin="SEN_B"/>
-<wire x1="162.56" y1="15.24" x2="162.56" y2="12.7" width="0.1524" layer="91"/>
-<wire x1="162.56" y1="12.7" x2="165.1" y2="12.7" width="0.1524" layer="91"/>
-<junction x="162.56" y="12.7"/>
-<pinref part="R1" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="ENA" class="0">
