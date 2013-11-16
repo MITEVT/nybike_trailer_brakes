@@ -32,12 +32,10 @@ typedef struct State {
 	moveState state;
 } State; 
 
-State a;
-State * b;
 
 typedef struct Action {
-	movState newState;
-	void * actPointer(void);
+	moveState newState;
+	void (*actPointer)(void);
 } Action;
 
 void setEnableDuty(uint8_t dutyCycle){
@@ -48,7 +46,7 @@ void setEnableDuty(uint8_t dutyCycle){
 }
 
 uint8_t getSwitchInput(void){
-	uint8_t switchIn = PINB & (1 << INPUT);
+	uint8_t switchIn = (PINB & (1 << INPUT)) >> INPUT;
 	return switchIn;
 }
 
@@ -63,7 +61,6 @@ void closeBrake(uint8_t speed) {
 	PORTB |= (1 << OUT1);
 	PORTB &= ~(1 << OUT2);
 	setEnableDuty(speed); //start the output again
-	a
 }
 
 void openBrake(uint8_t speed) {
@@ -87,8 +84,27 @@ Input getInput(void){
 
 void getNextState(Input * in, State * state, Action * newAct){
 	//passes struct of new state and function pointer for action
-
-	newAct->newState = newState;
+    if (in->bI == 1) {
+        if (state->state == OPEN) {
+            newAct->newState = CLOSING;
+        } else if (state->state == OPENING) {
+            newAct->newState = CLOSING;
+        } else if (state->state == CLOSING) {
+            newAct->newState = CLOSING;
+        } else if (state->state == CLOSED) {
+            newAct->newState = CLOSED;
+        }
+    } else {
+        if (state->state == OPEN) {
+            newAct->newState = OPEN;
+        } else if (state->state == OPENING) {
+            newAct->newState = OPENING;
+        } else if (state->state == CLOSING) {
+            newAct->newState = OPENING;
+        } else if (state->state == CLOSED) {
+            newAct->newState = OPENING;
+        }
+    }
 }
 
 void initTimers(void) {
@@ -131,11 +147,6 @@ void init(void) {
 }
 
 int main (void){
-
-	int a = 10;
-	int* b = &a;
-	*b = 20;
-	a
 	
 	init();
 
