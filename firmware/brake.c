@@ -15,6 +15,12 @@
 #define CLOSE_DUTY 30
 #define OPEN_DUTY 30
 
+#define INCREMENT_CYCLES 256
+
+const uint8_t speedProfile[32] = {
+    30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30
+};
+
 typedef struct Input {
 	uint8_t bI; //button Input on or off stored in the first bit
 	uint8_t mI; //motor Input 8 bit value corelated with motor current
@@ -29,6 +35,7 @@ typedef enum {
 
 typedef struct State {
 	uint8_t count;
+    uint8_t profIndex;
 	moveState state;
 } State; 
 
@@ -82,15 +89,27 @@ Input getInput(void){
 	return in;
 }
 
+//Takes input and curent state and sets next action to be completed
 void getNextState(Input * in, State * state, Action * newAct){
 	//passes struct of new state and function pointer for action
     if (in->bI == 1) {
         if (state->state == OPEN) {
             newAct->newState = CLOSING;
+            state->count = 0;
+            state->profIndex = 0;
         } else if (state->state == OPENING) {
             newAct->newState = CLOSING;
+            state->count = 0;
+            state->profIndex = 0;
         } else if (state->state == CLOSING) {
             newAct->newState = CLOSING;
+            state->count++;
+            if (state->count > INCREMENT_CYCLES){
+                state->count = 0;
+                if (state->profIndex < sizeof(speedProfile)) {
+                    state->profIndex ++;
+                }
+            }
         } else if (state->state == CLOSED) {
             newAct->newState = CLOSED;
         }
@@ -99,10 +118,23 @@ void getNextState(Input * in, State * state, Action * newAct){
             newAct->newState = OPEN;
         } else if (state->state == OPENING) {
             newAct->newState = OPENING;
+            state->count ++;
+            if (state->count > INCREMENT_CYCLES) {
+                state->count = 0;
+                if (state->profIndex > -1) {
+                    state->profIndex--;
+                }
+                //Need to discuss time for opening
+            }
         } else if (state->state == CLOSING) {
             newAct->newState = OPENING;
+            state->count = 0;
+            state->profIndex = sizeof(speedProfile) - 1;
         } else if (state->state == CLOSED) {
             newAct->newState = OPENING;
+            state->count = 0;
+            state->profIndex = sizeof(speedProfile) - 1;
+            
         }
     }
 }
