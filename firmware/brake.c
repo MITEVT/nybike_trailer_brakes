@@ -3,12 +3,12 @@
 
 //outputs
 #define OUT1 PB1 //Pin 6
-#define OUT2 PB2 //Pin 7
+#define OUT2 PB0 //Pin 7
 #define ENA  PB4 //Pin 3
 
 //inputs
 #define INPUT PB3 //Pin 2
-#define ISense 
+#define ISense PB2
 
 //PWM defines
 #define PWM_OVERFLOW 159
@@ -90,7 +90,7 @@ Input getInput(void){
 }
 
 //Takes input and curent state and sets next action to be completed
-void getNextState(Input * in, State * state, Action * newAct){
+void getNextAction(Input * in, State * state, Action * newAct){
 	//passes struct of new state and function pointer for action
     if (in->bI == 1) {
         if (state->state == OPEN) {
@@ -156,7 +156,8 @@ void initTimers(void) {
 }
 
 void adcInit(void) {
-	//ADCMUX |= 
+    //Set ADC to get single input from 
+	ADCSRA |= (1 << ADEN);
 }
 
 void initIO(void) {
