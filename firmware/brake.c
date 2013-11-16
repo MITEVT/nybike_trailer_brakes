@@ -16,6 +16,7 @@
 #define OPEN_DUTY 30
 
 #define INCREMENT_CYCLES 256
+#define CURRENT_THRESHOLD 255
 
 const uint8_t speedProfile[32] = {
     30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30
@@ -60,7 +61,11 @@ uint8_t getSwitchInput(void){
 
 //blocking untill conversion finish
 uint8_t getMCurrent(void){
-	return 0;
+    ADCSRA |= (1 << ADSC);
+    while ((ADCSRA & (1 << ADSC)) >> ADSC == 1) {
+        
+    }
+	return ADCH;
 }
 
 void closeBrake(uint8_t speed) {
@@ -102,14 +107,19 @@ void getNextAction(Input * in, State * state, Action * newAct){
             state->count = 0;
             state->profIndex = 0;
         } else if (state->state == CLOSING) {
-            newAct->newState = CLOSING;
-            state->count++;
-            if (state->count > INCREMENT_CYCLES){
-                state->count = 0;
-                if (state->profIndex < sizeof(speedProfile)) {
-                    state->profIndex ++;
+            if (in->mI < CURRENT_THRESHOLD) {
+                newAct->newState = CLOSING;
+                state->count++;
+                if (state->count > INCREMENT_CYCLES){
+                    state->count = 0;
+                    if (state->profIndex < sizeof(speedProfile)) {
+                        state->profIndex ++;
+                    }
                 }
+            } else {
+                state->state = CLOSED;
             }
+            
         } else if (state->state == CLOSED) {
             newAct->newState = CLOSED;
         }
@@ -156,7 +166,9 @@ void initTimers(void) {
 }
 
 void adcInit(void) {
-    //Set ADC to get single input from 
+    //Set ADC to use VCC as voltage reference, Single Ended Input on PB2, Enable ADC
+    //Not left adjusted FOR SAFETY
+    ADMUX |= (1 << MUX0) | (1 << ADLAR);
 	ADCSRA |= (1 << ADEN);
 }
 
@@ -172,6 +184,7 @@ void initIO(void) {
 void init(void) {
 	initIO();
 	initTimers();
+    adcInit();
 	//setup state
 
 
