@@ -18,11 +18,12 @@
 #define INCREMENT_CYCLES 256
 #define CURRENT_THRESHOLD 255
 
+
 const uint8_t speedProfile[32] = {
     30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30
 };
 
-typedef struct Input {
+typedef struct Input{
 	uint8_t bI; //button Input on or off stored in the first bit
 	uint8_t mI; //motor Input 8 bit value corelated with motor current
 } Input;
@@ -43,7 +44,7 @@ typedef struct State {
 
 typedef struct Action {
 	moveState newState;
-	void (*actPointer)(void);
+	void (*actPointer)(State *s);
 } Action;
 
 void setEnableDuty(uint8_t dutyCycle){
@@ -59,7 +60,7 @@ uint8_t getSwitchInput(void){
 }
 
 
-//blocking untill conversion finish
+//blocking until conversion finish
 uint8_t getMCurrent(void){
     ADCSRA |= (1 << ADSC);
     while ((ADCSRA & (1 << ADSC)) >> ADSC == 1) {
@@ -67,6 +68,7 @@ uint8_t getMCurrent(void){
     }
 	return ADCH;
 }
+
 
 void closeBrake(uint8_t speed) {
 	setEnableDuty(0); //kill the output in case switching is dangerous
@@ -95,57 +97,82 @@ Input getInput(void){
 }
 
 //Takes input and curent state and sets next action to be completed
-void getNextAction(Input * in, State * state, Action * newAct){
+void getNextState(Input * in, State * state){
 	//passes struct of new state and function pointer for action
     if (in->bI == 1) {
-        if (state->state == OPEN) {
-            newAct->newState = CLOSING;
-            state->count = 0;
-            state->profIndex = 0;
-        } else if (state->state == OPENING) {
-            newAct->newState = CLOSING;
-            state->count = 0;
-            state->profIndex = 0;
-        } else if (state->state == CLOSING) {
-            if (in->mI < CURRENT_THRESHOLD) {
-                newAct->newState = CLOSING;
-                state->count++;
-                if (state->count > INCREMENT_CYCLES){
-                    state->count = 0;
-                    if (state->profIndex < sizeof(speedProfile)) {
-                        state->profIndex ++;
-                    }
-                }
-            } else {
-                state->state = CLOSED;
-            }
-            
-        } else if (state->state == CLOSED) {
-            newAct->newState = CLOSED;
-        }
+    	switch (state->state) {
+    		case OPEN:
+    			state->state = CLOSING;
+    			state->count = 0;
+    			state->profIndex = 0;
+    			break;
+    		case OPENING:
+    			state->state = CLOSING;
+    			state->count = 0;
+    			state->profIndex = 0;
+    			break;
+    		case CLOSING:
+            	if (in->mI < CURRENT_THRESHOLD) {
+                	state->state = CLOSING;
+                	state->count++;
+                	if (state->count > INCREMENT_CYCLES){
+                    	state->count = 0;
+                    	if (state->profIndex < sizeof(speedProfile)) {
+                        	state->profIndex ++;
+                    	}
+                	}
+            	} else {
+                	state->state = CLOSED;
+            	}
+            	break;
+    		case CLOSED:
+    			state->state = CLOSED;
+    			break;
+    	}
     } else {
-        if (state->state == OPEN) {
-            newAct->newState = OPEN;
-        } else if (state->state == OPENING) {
-            newAct->newState = OPENING;
-            state->count ++;
-            if (state->count > INCREMENT_CYCLES) {
-                state->count = 0;
-                if (state->profIndex > -1) {
-                    state->profIndex--;
-                }
+    	switch (state->state) {
+    		case OPEN:
+    			state->state = OPEN;
+    			break;
+    		case OPENING:
+    			state->state = OPENING;
+            	state->count ++;
+            	if (state->count > INCREMENT_CYCLES) {
+                	state->count = 0;
+                	if (state->profIndex > -1) {
+                    	state->profIndex--;
+               		}
                 //Need to discuss time for opening
-            }
-        } else if (state->state == CLOSING) {
-            newAct->newState = OPENING;
-            state->count = 0;
-            state->profIndex = sizeof(speedProfile) - 1;
-        } else if (state->state == CLOSED) {
-            newAct->newState = OPENING;
-            state->count = 0;
-            state->profIndex = sizeof(speedProfile) - 1;
-            
-        }
+            	}
+    			break;
+    		case CLOSING:
+            	state->state = OPENING;
+            	state->count = 0;
+            	state->profIndex = sizeof(speedProfile) - 1;
+            	break;
+    		case CLOSED:
+            	state->state = OPENING;
+            	state->count = 0;
+            	state->profIndex = sizeof(speedProfile) - 1;
+    			break;
+    	}
+    }
+}
+
+void doAction(State* state) {
+    switch (state->state) {
+        case OPEN:
+            stopBrake();
+            break;
+        case OPENING:
+            openBrake(speedProfile[state->profIndex]);
+            break;
+        case CLOSING:
+            closeBrake(speedProfile[state->profIndex]);
+            break;
+        case CLOSED:
+            stopBrake();
+            break;
     }
 }
 
@@ -165,7 +192,7 @@ void initTimers(void) {
 	OCR1B = 0;
 }
 
-void adcInit(void) {
+void initADC(void) {
     //Set ADC to use VCC as voltage reference, Single Ended Input on PB2, Enable ADC
     //Not left adjusted FOR SAFETY
     ADMUX |= (1 << MUX0) | (1 << ADLAR);
@@ -184,9 +211,8 @@ void initIO(void) {
 void init(void) {
 	initIO();
 	initTimers();
-    adcInit();
+    initADC();
 	//setup state
-
 
 	//enable interrupts last
 	sei();
@@ -196,7 +222,12 @@ int main (void){
 	
 	init();
 
+    State state;
+    state.state = OPEN;
+
 	while(1) {
-		
-	}
+        Input i = getInput();
+		getNextState(&i, &state);
+        doAction(&state);
+	} 
 }
