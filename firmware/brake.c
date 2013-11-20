@@ -18,6 +18,20 @@
 #define INCREMENT_CYCLES 256
 #define CURRENT_THRESHOLD 255
 
+typedef enum {
+    OPEN,
+    OPENING,
+    CLOSED,
+    CLOSING
+ } moveState;
+
+typedef struct State {
+    uint8_t count;
+    uint8_t profIndex;
+    moveState state;
+} State; 
+
+State state;
 
 const uint8_t speedProfile[32] = {
     30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30
@@ -28,24 +42,10 @@ typedef struct Input{
 	uint8_t mI; //motor Input 8 bit value corelated with motor current
 } Input;
 
-typedef enum {
-	OPEN,
-	OPENING,
-	CLOSED,
-	CLOSING
- } moveState;
-
-typedef struct State {
-	uint8_t count;
-    uint8_t profIndex;
-	moveState state;
-} State; 
-
-
-typedef struct Action {
+/*typedef struct Action {
 	moveState newState;
 	void (*actPointer)(State *s);
-} Action;
+} Action;*/
 
 void setEnableDuty(uint8_t dutyCycle){
 	if (dutyCycle > PWM_OVERFLOW){
@@ -178,6 +178,12 @@ void doAction(State* state) {
     }
 }
 
+ISR(TIM1_COMPB_vect) {
+    Input i = getInput();
+    getNextState(&i, &state);
+    doAction(&state);
+}
+
 void initTimers(void) {
 	//Clear timer on compare match with OCR1C
 	TCCR1 |= (1 << CTC1);
@@ -187,6 +193,8 @@ void initTimers(void) {
 	GTCCR |= (1 << PWM1B) | (1 << COM1B1);
 	//PLL Control and status
 	PLLCSR |= (1 << PCKE) | (1 << PLLE);
+    //Set to interrupt on overflow
+    TIMSK |= (1 << TOIE1);
 	//When to "overflow"
 	OCR1C = PWM_OVERFLOW;
 	//When to clear
@@ -214,7 +222,8 @@ void init(void) {
 	initIO();
 	initTimers();
     initADC();
-	//setup state
+	
+    state.state = OPEN;
 
 	//enable interrupts last
 	sei();
@@ -224,12 +233,6 @@ int main (void){
 	
 	init();
 
-    State state;
-    state.state = OPEN;
-
 	while(1) {
-        Input i = getInput();
-		getNextState(&i, &state);
-        doAction(&state);
 	} 
 }
