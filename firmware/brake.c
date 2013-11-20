@@ -86,6 +86,8 @@ void openBrake(uint8_t speed) {
 
 void stopBrake(void) {
 	setEnableDuty(0); //kill the output
+    PORTB |= (1 << OUT1) | (1 << OUT2);
+    setEnableDuty(PWM_OVERFLOW);
 	//TODO: is sohould we brake the motor or can we leave this be
 }
 
