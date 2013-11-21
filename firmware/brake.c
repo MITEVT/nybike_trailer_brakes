@@ -15,7 +15,9 @@
 #define CLOSE_DUTY 30
 #define OPEN_DUTY 30
 
+//Number of cycels to remain on specific speed profile value
 #define INCREMENT_CYCLES 256
+//Analog value of voltage that determines when to stop motor
 #define CURRENT_THRESHOLD 255
 
 typedef enum {
@@ -33,6 +35,7 @@ typedef struct State {
 
 State state;
 
+//Allows for gradient opening and closing
 const uint8_t speedProfile[32] = {
     30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30
 };
@@ -47,6 +50,10 @@ typedef struct Input{
 	void (*actPointer)(State *s);
 } Action;*/
 
+/*
+*Sets the Timer 1 Duty cycle to given value. 
+*Used to give motor varying amounts of power 
+*/
 void setEnableDuty(uint8_t dutyCycle){
 	if (dutyCycle > PWM_OVERFLOW){
 		dutyCycle = PWM_OVERFLOW;
@@ -60,7 +67,7 @@ uint8_t getSwitchInput(void){
 }
 
 
-//blocking until conversion finish
+//Blocks until ADC is completed
 uint8_t getMCurrent(void){
     ADCSRA |= (1 << ADSC);
     while ((ADCSRA & (1 << ADSC)) >> ADSC == 1) {
@@ -68,7 +75,6 @@ uint8_t getMCurrent(void){
     }
 	return ADCH;
 }
-
 
 void closeBrake(uint8_t speed) {
 	setEnableDuty(0); //kill the output in case switching is dangerous
@@ -88,7 +94,7 @@ void stopBrake(void) {
 	setEnableDuty(0); //kill the output
     PORTB |= (1 << OUT1) | (1 << OUT2);
     setEnableDuty(PWM_OVERFLOW);
-	//TODO: is sohould we brake the motor or can we leave this be
+	//TODO: is should we brake the motor or can we leave this be
 }
 
 Input getInput(void){
@@ -99,8 +105,8 @@ Input getInput(void){
 }
 
 //Takes input and curent state and sets next action to be completed
-void getNextState(Input * in, State * state){
-	//passes struct of new state and function pointer for action
+void getNextState(Input* in, State* state){
+	//passes struct of new state
     if (in->bI == 1) {
     	switch (state->state) {
     		case OPEN:
@@ -143,8 +149,11 @@ void getNextState(Input * in, State * state){
                 	state->count = 0;
                 	if (state->profIndex > -1) {
                     	state->profIndex--;
-               		}
+               		} else {
+                        state->state = OPEN;
+                    }
                 //Need to discuss time for opening
+                //Currently set to finish opening when speedProfile is fully traversed
             	}
     			break;
     		case CLOSING:
@@ -161,6 +170,7 @@ void getNextState(Input * in, State * state){
     }
 }
 
+//Takes a state and completes the required action
 void doAction(State* state) {
     switch (state->state) {
         case OPEN:
@@ -178,6 +188,8 @@ void doAction(State* state) {
     }
 }
 
+//Interupt function for when Timer 1 gets a compare match, or is cleared
+//Gets input, finds next state, and does required action
 ISR(TIM1_COMPB_vect) {
     Input i = getInput();
     getNextState(&i, &state);
@@ -203,8 +215,10 @@ void initTimers(void) {
 }
 
 void initADC(void) {
-    //Set ADC to use VCC as voltage reference, Single Ended Input on PB2, Enable ADC
-    //Not left adjusted FOR SAFETY
+    /*Set ADC to use VCC as voltage reference
+    *Single Ended Input on PB2
+    *Enable ADC
+    */
     ADMUX |= (1 << MUX0) | (1 << ADLAR);
 	ADCSRA |= (1 << ADEN);
 }
@@ -223,9 +237,10 @@ void init(void) {
 	initTimers();
     initADC();
 	
+    //Initial State
     state.state = OPEN;
 
-	//enable interrupts last
+	//enable interrupts
 	sei();
 }
 
