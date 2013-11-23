@@ -16,7 +16,7 @@
 #define OPEN_DUTY 30
 
 //Number of cycels to remain on specific speed profile value
-#define INCREMENT_CYCLES 256
+#define INCREMENT_CYCLES 255
 //Analog value of voltage that determines when to stop motor
 #define CURRENT_THRESHOLD 255
 
@@ -30,6 +30,7 @@ typedef enum {
 typedef struct State {
     uint8_t count;
     uint8_t profIndex;
+    uint16_t closeCount;
     moveState state;
 } State; 
 
@@ -51,8 +52,8 @@ typedef struct Input{
 } Action;*/
 
 /*
-*Sets the Timer 1 Duty cycle to given value. 
-*Used to give motor varying amounts of power 
+Sets the Timer 1 Duty cycle to given value. 
+Used to give motor varying amounts of power 
 */
 void setEnableDuty(uint8_t dutyCycle){
 	if (dutyCycle > PWM_OVERFLOW){
@@ -87,14 +88,13 @@ void openBrake(uint8_t speed) {
 	setEnableDuty(0); //kill the output in case switching is dangerous
 	PORTB &= ~(1 << OUT1);
 	PORTB |= (1 << OUT2);
-	setEnableDuty(speed); //start the motor controller output again
+	setEnableDuty(speed); //start the output again
 }
 
 void stopBrake(void) {
 	setEnableDuty(0); //kill the output
     PORTB |= (1 << OUT1) | (1 << OUT2);
-    setEnableDuty(PWM_OVERFLOW);
-	//TODO: is should we brake the motor or can we leave this be
+    setEnableDuty(PWM_OVERFLOW); //start the output again
 }
 
 Input getInput(void){
@@ -104,9 +104,8 @@ Input getInput(void){
 	return in;
 }
 
-//Takes input and curent state and sets next action to be completed
+//Takes input and curent state and sets next state
 void getNextState(Input* in, State* state){
-	//passes struct of new state
     if (in->bI == 1) {
     	switch (state->state) {
     		case OPEN:
@@ -123,6 +122,7 @@ void getNextState(Input* in, State* state){
             	if (in->mI < CURRENT_THRESHOLD) {
                 	state->state = CLOSING;
                 	state->count++;
+                    state->closeCount++;
                 	if (state->count > INCREMENT_CYCLES){
                     	state->count = 0;
                     	if (state->profIndex < sizeof(speedProfile)) {
@@ -143,18 +143,19 @@ void getNextState(Input* in, State* state){
     			state->state = OPEN;
     			break;
     		case OPENING:
-    			state->state = OPENING;
-            	state->count ++;
-            	if (state->count > INCREMENT_CYCLES) {
-                	state->count = 0;
-                	if (state->profIndex > -1) {
-                    	state->profIndex--;
-               		} else {
-                        state->state = OPEN;
-                    }
-                //Need to discuss time for opening
-                //Currently set to finish opening when speedProfile is fully traversed
-            	}
+                if (state->closeCount > 0) {
+        			state->state = OPENING;
+                	state->count++;
+                    state->closeCount--;
+                	if (state->count > INCREMENT_CYCLES) {
+                    	state->count = 0;
+                    	if (state->profIndex > -1) {
+                        	state->profIndex--;
+                   		}
+                	}
+                } else {
+                    state->state = OPEN;
+                }
     			break;
     		case CLOSING:
             	state->state = OPENING;
@@ -215,9 +216,10 @@ void initTimers(void) {
 }
 
 void initADC(void) {
-    /*Set ADC to use VCC as voltage reference
-    *Single Ended Input on PB2
-    *Enable ADC
+    /*
+    Set ADC to use VCC as voltage reference
+    Single Ended Input on PB2
+    Enable ADC
     */
     ADMUX |= (1 << MUX0) | (1 << ADLAR);
 	ADCSRA |= (1 << ADEN);
@@ -239,6 +241,7 @@ void init(void) {
 	
     //Initial State
     state.state = OPEN;
+    state.closeCount = 0;
 
 	//enable interrupts
 	sei();
