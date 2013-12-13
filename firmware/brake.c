@@ -1,14 +1,4 @@
-#include <avr/io.h>
-#include <avr/interrupt.h>
-
-//outputs
-#define OUT1 PB1 //Pin 6
-#define OUT2 PB0 //Pin 7
-#define ENA  PB4 //Pin 3
-
-//inputs
-#define INPUT PB3 //Pin 2
-#define ISense PB2
+#include "brake.h"
 
 //PWM defines
 #define PWM_OVERFLOW 159
@@ -46,60 +36,40 @@ typedef struct Input{
 	uint8_t mI; //motor Input 8 bit value corelated with motor current
 } Input;
 
-/*typedef struct Action {
-	moveState newState;
-	void (*actPointer)(State *s);
-} Action;*/
-
-/*
-Sets the Timer 1 Duty cycle to given value. 
-Used to give motor varying amounts of power 
-*/
-void setEnableDuty(uint8_t dutyCycle){
-	if (dutyCycle > PWM_OVERFLOW){
-		dutyCycle = PWM_OVERFLOW;
-	}
-	OCR1B = dutyCycle;
-}
-
-uint8_t getSwitchInput(void){
-	uint8_t switchIn = (PINB & (1 << INPUT)) >> INPUT;
-	return switchIn;
-}
-
 
 //Blocks until ADC is completed
 uint8_t getMCurrent(void){
-    ADCSRA |= (1 << ADSC);
-    while ((ADCSRA & (1 << ADSC)) >> ADSC == 1) {
+    start_adc();
+    while (get_adc_running()) {
         
     }
-	return ADCH;
+	return get_value();
 }
 
 void closeBrake(uint8_t speed) {
-	setEnableDuty(0); //kill the output in case switching is dangerous
-	PORTB |= (1 << OUT1);
-	PORTB &= ~(1 << OUT2);
-	setEnableDuty(speed); //start the output again
+	set_duty(0); //kill the output in case switching is dangerous
+    set_out1_high();
+    set_out2_low();
+	set_duty(speed); //start the output again
 }
 
 void openBrake(uint8_t speed) {
-	setEnableDuty(0); //kill the output in case switching is dangerous
-	PORTB &= ~(1 << OUT1);
-	PORTB |= (1 << OUT2);
-	setEnableDuty(speed); //start the output again
+	set_duty(0); //kill the output in case switching is dangerous
+    set_out1_low()
+    set_out2_high()
+	set_duty(speed); //start the output again
 }
 
 void stopBrake(void) {
-	setEnableDuty(0); //kill the output
-    PORTB |= (1 << OUT1) | (1 << OUT2);
-    setEnableDuty(PWM_OVERFLOW); //start the output again
+	set_duty(0); //kill the output
+    set_out1_high();
+    set_out2_high();
+    set_duty(PWM_OVERFLOW); //start the output again
 }
 
 Input getInput(void){
 	Input in;
-	in.bI = getSwitchInput();
+	in.bI = get_input();
 	in.mI = getMCurrent();
 	return in;
 }
@@ -197,41 +167,20 @@ ISR(TIM1_COMPB_vect) {
     doAction(&state);
 }
 
+
+
 void initTimers(void) {
-	//Clear timer on compare match with OCR1C
-	TCCR1 |= (1 << CTC1);
-	//Set to PCK/4 Prescaling
-	TCCR1 |= (1 << CS11) | (1 << CS10);
-	//Turn on PWM based on Comparator B, Compare mode to clear on match
-	GTCCR |= (1 << PWM1B) | (1 << COM1B1);
-	//PLL Control and status
-	PLLCSR |= (1 << PCKE) | (1 << PLLE);
-    //Set to interrupt on overflow
-    TIMSK |= (1 << TOIE1);
-	//When to "overflow"
-	OCR1C = PWM_OVERFLOW;
-	//When to clear
-	//don't output anything till we are ready
-	OCR1B = 0;
+	set_up_timer(PWM_OVERFLOW);
 }
 
 void initADC(void) {
-    /*
-    Set ADC to use VCC as voltage reference
-    Single Ended Input on PB2
-    Enable ADC
-    */
-    ADMUX |= (1 << MUX0) | (1 << ADLAR);
-	ADCSRA |= (1 << ADEN);
+    set_up_adc();
 }
 
+
 void initIO(void) {
-	//Set input pin with pull up
-	PORTB |= (1 << INPUT);
-	//Set output pin
-	DDRB |= (1 << OUT1);
-	DDRB |= (1 << OUT2);
-	DDRB |= (1 << ENA);
+	set_up_input();
+    set_up_output();
 }
 
 void init(void) {
@@ -253,4 +202,5 @@ int main (void){
 
 	while(1) {
 	} 
+    return 1;
 }
