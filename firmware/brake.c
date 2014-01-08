@@ -55,8 +55,8 @@ void closeBrake(uint8_t speed) {
 
 void openBrake(uint8_t speed) {
 	set_duty(0); //kill the output in case switching is dangerous
-    set_out1_low()
-    set_out2_high()
+    set_out1_low();
+    set_out2_high();
 	set_duty(speed); //start the output again
 }
 
@@ -76,7 +76,7 @@ Input getInput(void){
 
 //Takes input and curent state and sets next state
 void getNextState(Input* in, State* state){
-    if (in->bI == 1) {
+    if (in->bI == 0) {
     	switch (state->state) {
     		case OPEN:
     			state->state = CLOSING;
@@ -197,10 +197,12 @@ void init(void) {
 }
 
 int main (void){
-	
+	//initIO();
 	init();
 
 	while(1) {
+        // set_out2_high();
+        // set_out2_low();
 	} 
     return 1;
 }
