@@ -15,17 +15,7 @@
 #define set_up_input() (PORTB |= (1 << INPUT))
 #define set_up_output() (DDRB |= (1 << OUT1) | (1 << OUT2) | (1 << ENA))
 
-#define set_up_adc() {ADMUX |= (1 << MUX0) | (1 << ADLAR); ADCSRA |= (1 << ADEN);}
-
-// #define set_up_timer(pwm) {TCCR1 |= (1 << CTC1) | (1 << CS11) | (1 << CS10); \
-//                             GTCCR |= (1 << PWM1B) | (1 << COM1B1); \
-//                             // PLLCSR |= (1 << PLLE); \
-//                             // _delay_us(100); \
-//                             // while(!(PLLCSR & (1 << PLOCK))) {} \
-//                             // PLLCSR |= (1 << PCKE); \
-//                             TIMSK |= (1 << OCIE1B); \
-//                             OCR1C = pwm; \
-// 							OCR1B = 1;}
+#define set_up_adc() {ADMUX |= (1 << MUX0) | (0 << ADLAR); ADCSRA |= (1 << ADEN);}
 
 #define set_up_timer(pwm) { OCR1B = 1; \
 							OCR1C = pwm; \
@@ -35,7 +25,12 @@
 							_delay_us(100); \
 							while(!(PLLCSR & (1 << PLOCK))) {} \
 							PLLCSR |= (1 << PCKE); \
-							TIMSK |= (1 << OCIE1B); }
+							TIMSK |= (1 << TOIE1); }
+							//TIMSK |= (1 << OCIE1B); }
+
+#define disable_interrupt() (TIMSK &= ~(1 << TOIE1))
+#define reset_timer() (TCNT1 = 0)
+#define enable_interrupt() (TIMSK |= (1 << TOIE1))
 
 #define set_duty(duty) (OCR1B = duty)
 #define get_input() ((PINB & (1 << INPUT)))
@@ -49,4 +44,4 @@
 
 #define start_adc() (ADCSRA |= (1 << ADSC))
 #define get_adc_running() ((ADCSRA & (1 << ADSC)) >> ADSC)
-#define get_value() (ADCH)
+#define get_value() (ADCL + (ADCH >> 8))

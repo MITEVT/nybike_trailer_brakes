@@ -8,7 +8,10 @@
 //Number of cycels to remain on specific speed profile value
 #define INCREMENT_CYCLES 255
 //Analog value of voltage that determines when to stop motor
-#define CURRENT_THRESHOLD 255
+#define CURRENT_THRESHOLD 100
+
+uint8_t duty = 150;
+uint8_t inc = -1;
 
 typedef enum {
     OPEN,
@@ -18,6 +21,7 @@ typedef enum {
  } moveState;
 
 typedef struct State {
+    uint8_t changeInState;
     uint8_t count;
     uint8_t profIndex;
     uint16_t closeCount;
@@ -28,17 +32,17 @@ State state;
 
 //Allows for gradient opening and closing
 const uint8_t speedProfile[32] = {
-    30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30
+    150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150
 };
 
-typedef struct Input{
+typedef struct Input_s{
 	uint8_t bI; //button Input on or off stored in the first bit
-	uint8_t mI; //motor Input 8 bit value corelated with motor current
+	uint16_t mI; //motor Input 8 bit value corelated with motor current
 } Input;
 
 
 //Blocks until ADC is completed
-uint8_t getMCurrent(void){
+uint16_t getMCurrent(void){
     start_adc();
     while (get_adc_running()) {
         
@@ -64,7 +68,6 @@ void stopBrake(void) {
 	set_duty(0); //kill the output
     set_out1_high();
     set_out2_high();
-    set_duty(PWM_OVERFLOW); //start the output again
 }
 
 Input getInput(void){
@@ -78,43 +81,42 @@ Input getInput(void){
 void getNextState(Input* in, State* state){
     if (in->bI == 0) {
     	switch (state->state) {
-    		case OPEN:
-    			state->state = CLOSING;
-    			state->count = 0;
-    			state->profIndex = 0;
-    			break;
+    		case OPEN: //Follow through to OPENING
     		case OPENING:
     			state->state = CLOSING;
     			state->count = 0;
     			state->profIndex = 0;
+                state->changeInState = 1;
     			break;
     		case CLOSING:
             	if (in->mI < CURRENT_THRESHOLD) {
-                	state->state = CLOSING;
                 	state->count++;
                     state->closeCount++;
                 	if (state->count > INCREMENT_CYCLES){
                     	state->count = 0;
-                    	if (state->profIndex < sizeof(speedProfile)) {
+                    	if (state->profIndex < sizeof(speedProfile)/sizeof(speedProfile[0])) {
                         	state->profIndex ++;
                     	}
                 	}
             	} else {
                 	state->state = CLOSED;
+                    state->changeInState = 1;
             	}
             	break;
     		case CLOSED:
-    			state->state = CLOSED;
-    			break;
+                break;
     	}
     } else {
     	switch (state->state) {
-    		case OPEN:
-    			state->state = OPEN;
-    			break;
+    		case CLOSED: //Follow through to closed
+            case CLOSING:
+                state->state = OPENING;
+                state->changeInState = 1;
+                state->count = 0;
+                state->profIndex = sizeof(speedProfile)/sizeof(speedProfile[0]) - 1;
+                break;
     		case OPENING:
                 if (state->closeCount > 0) {
-        			state->state = OPENING;
                 	state->count++;
                     state->closeCount--;
                 	if (state->count > INCREMENT_CYCLES) {
@@ -125,18 +127,11 @@ void getNextState(Input* in, State* state){
                 	}
                 } else {
                     state->state = OPEN;
+                    state->changeInState = 1;
                 }
     			break;
-    		case CLOSING:
-            	state->state = OPENING;
-            	state->count = 0;
-            	state->profIndex = sizeof(speedProfile) - 1;
-            	break;
-    		case CLOSED:
-            	state->state = OPENING;
-            	state->count = 0;
-            	state->profIndex = sizeof(speedProfile) - 1;
-    			break;
+    		case OPEN:
+                break;
     	}
     }
 }
@@ -161,10 +156,17 @@ void doAction(State* state) {
 
 //Interupt function for when Timer 1 gets a compare match, or is cleared
 //Gets input, finds next state, and does required action
-ISR(TIM1_COMPB_vect) {
+//ISR(TIM1_COMPB_vect) {
+ISR(TIM1_OVF_vect) {
+    disable_interrupt();
     Input i = getInput();
     getNextState(&i, &state);
-    doAction(&state);
+    if (state.changeInState) {
+        state.changeInState = 1;
+        doAction(&state);
+    }
+    reset_timer();
+    enable_interrupt();
 }
 
 
@@ -191,18 +193,35 @@ void init(void) {
     //Initial State
     state.state = OPEN;
     state.closeCount = 0;
+    state.changeInState = 0;
 
 	//enable interrupts
 	sei();
 }
 
 int main (void){
-	//initIO();
-	init();
+    init();
 
+    uint8_t t = 0;
+    uint8_t duty = 150;
+    uint8_t count = 0;
 	while(1) {
-        // set_out2_high();
-        // set_out2_low();
+        // Input i = getInput();
+        // if (!i.bI && !t) {
+        //     duty = 150;
+        //     closeBrake(duty);
+        //     t = 1;
+        // } else if(i.bI && t) {
+        //     stopBrake();
+        //     t = 0;
+        // } else if(!i.bI && t && duty > 10) {
+        //     count++;
+        //     if (count > 100) {
+        //         count = 0;
+        //         duty--;
+        //         closeBrake(duty);
+        //     }
+        // }
 	} 
     return 1;
 }
