@@ -31,11 +31,13 @@ typedef struct State {
 State state;
 
 //Allows for gradient opening and closing
-const uint8_t speedProfile[32] = {
-    150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150
-};
+// const uint8_t speedProfile[32] = {
+//     150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150
+// };
+const uint8_t speedProfile[1] = {159};
 
-const uint8_t PROFILE_SIZE = 32;
+
+const uint8_t PROFILE_SIZE = 1;
 
 typedef struct Input_s{
 	uint8_t bI; //button Input on or off stored in the first bit
@@ -52,18 +54,18 @@ uint16_t getMCurrent(void){
 	return get_value();
 }
 
-void closeBrake(uint8_t speed) {
-	set_duty(0); //kill the output in case switching is dangerous
-    set_out1_high();
-    set_out2_low();
-	set_duty(speed); //start the output again
+void setSpeed(uint8_t speed) {
+    set_duty(speed);
 }
 
-void openBrake(uint8_t speed) {
-	set_duty(0); //kill the output in case switching is dangerous
+void closeBrake() {
+    set_out1_high();
+    set_out2_low();
+}
+
+void openBrake() {
     set_out1_low();
     set_out2_high();
-	set_duty(speed); //start the output again
 }
 
 void stopBrake(void) {
@@ -119,14 +121,14 @@ void getNextState(Input* in, State* state){
                 break;
     		case OPENING:
                 if (state->closeCount > 0) {
-                	//state->count++;
-                    //state->closeCount--;
-                	// if (state->count > INCREMENT_CYCLES) {
-                 //    	state->count = 0;
-                 //    	if (state->profIndex > 0) {
-                 //        	state->profIndex--;
-                 //   		}
-                	// }
+                	state->count++;
+                    state->closeCount--;
+                	if (state->count > INCREMENT_CYCLES) {
+                    	state->count = 0;
+                    	if (state->profIndex > 0) {
+                        	state->profIndex--;
+                   		}
+                	}
                 } else {
                     state->state = OPEN;
                     state->changeInState = 1;
@@ -140,15 +142,16 @@ void getNextState(Input* in, State* state){
 
 //Takes a state and completes the required action
 void doAction(State* state) {
+    setSpeed(speedProfile[state->profIndex]);
     switch (state->state) {
         case OPEN:
             stopBrake();
             break;
         case OPENING:
-            openBrake(speedProfile[state->profIndex]);
+            openBrake();
             break;
         case CLOSING:
-            closeBrake(speedProfile[state->profIndex]);
+            closeBrake();
             break;
         case CLOSED:
             stopBrake();
@@ -159,11 +162,11 @@ void doAction(State* state) {
 //Interupt function for when Timer 1 gets a compare match, or is cleared
 //Gets input, finds next state, and does required action
 //ISR(TIM1_COMPB_vect) {
-ISR(TIM1_OVF_vect) {
+ISR(TIM0_OVF_vect) {
     Input i = getInput();
     getNextState(&i, &state);
     if (state.changeInState) {
-        state.changeInState = 1;
+        state.changeInState = 0;
         doAction(&state);
     }
 }
@@ -172,6 +175,7 @@ ISR(TIM1_OVF_vect) {
 
 void initTimers(void) {
 	set_up_timer(PWM_OVERFLOW);
+    set_up_timer0();
 }
 
 void initADC(void) {
@@ -193,6 +197,7 @@ void init(void) {
     state.state = OPEN;
     state.closeCount = 0;
     state.changeInState = 0;
+    state.profIndex = 0;
 
 	//enable interrupts
 	sei();
