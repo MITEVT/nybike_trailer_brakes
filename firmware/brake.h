@@ -18,12 +18,16 @@
 //Set single ended input on PB2, Prescale by 8 to get 125kHz Sample frequency, and enable
 #define set_up_adc() {ADMUX |= (1 << MUX0) | (0 << ADLAR); ADCSRA |= (1 << ADPS1) | (1 << ADPS0); ADCSRA |= (1 << ADEN);}
 
+#define start_adc() (ADCSRA |= (1 << ADSC))
+#define adc_is_running() ((ADCSRA & (1 << ADSC)) >> ADSC)
+#define get_value() (ADCL + (ADCH << 8))
+
 #define set_up_timer0() { \
 	TCCR0B |= (1 << CS01); \
 	TIMSK |= (1 << TOIE0); \
 }
 
-#define set_up_timer(pwm) { \
+#define set_up_timer1(pwm) { \
 	OCR1B = 0; \
 	OCR1C = pwm; \
 	TCCR1 |= (1 << CS11) | (1 << CS10); \
@@ -48,6 +52,3 @@
 #define set_enable_high() (PORTB |= (1 << ENA))
 #define set_enable_low() (PORTB &= ~(1 << ENA))
 
-#define start_adc() (ADCSRA |= (1 << ADSC))
-#define adc_is_running() ((ADCSRA & (1 << ADSC)) >> ADSC)
-#define get_value() (ADCL + (ADCH << 8))

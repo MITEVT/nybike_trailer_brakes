@@ -91,7 +91,7 @@ void getNextState(Input* in, State* state){
                 state->changeInState = 1;
     			break;
     		case CLOSING:
-            	if (1){//in->mI < CURRENT_THRESHOLD) {
+            	if (in->mI < CURRENT_THRESHOLD || (state->count < 100 && state->profIndex == 0)) {
                 	state->count++;
                     state->closeCount++;
                 	if (state->count > INCREMENT_CYCLES){
@@ -171,7 +171,7 @@ ISR(TIM0_OVF_vect) {
 
 
 void initTimers(void) {
-	set_up_timer(PWM_OVERFLOW);
+	set_up_timer1(PWM_OVERFLOW);
     set_up_timer0();
 }
 
