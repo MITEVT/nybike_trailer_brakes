@@ -1,3 +1,0 @@
-Integrated H-Bridge:
-
-TLE 5206-2
