@@ -18,15 +18,21 @@
 //Set single ended input on PB2, Prescale by 8 to get 125kHz Sample frequency, and enable
 #define set_up_adc() {ADMUX |= (1 << MUX0) | (0 << ADLAR); ADCSRA |= (1 << ADPS1) | (1 << ADPS0); ADCSRA |= (1 << ADEN);}
 
-#define set_up_timer(pwm) { OCR1B = 1; \
-							OCR1C = pwm; \
-							TCCR1 |= (1 << CS11) | (1 << CS10); \
-							GTCCR |= (1 << PWM1B) | (1 << COM1B1); \
-							PLLCSR |= (1 << PLLE); \
-							_delay_us(100); \
-							while(!(PLLCSR & (1 << PLOCK))) {} \
-							PLLCSR |= (1 << PCKE); \
-							TIMSK |= (1 << TOIE1); }
+#define set_up_timer0() { \
+	TCCR0B |= (1 << CS01); \
+	TIMSK |= (1 << TOIE0); \
+}
+
+#define set_up_timer(pwm) { \
+	OCR1B = 0; \
+	OCR1C = pwm; \
+	TCCR1 |= (1 << CS11) | (1 << CS10); \
+	GTCCR |= (1 << PWM1B) | (1 << COM1B1); \
+	PLLCSR |= (1 << PLLE); \
+	_delay_us(100); \
+	while(!(PLLCSR & (1 << PLOCK))) {} \
+	PLLCSR |= (1 << PCKE); \
+}
 
 #define disable_interrupt() (TIMSK &= ~(1 << TOIE1))
 #define reset_timer() (TCNT1 = 0)
