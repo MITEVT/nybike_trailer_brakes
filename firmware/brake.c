@@ -6,19 +6,25 @@
 #define OPEN_DUTY 30
 
 //Number of cycels to remain on specific speed profile value
-#define INCREMENT_CYCLES 255
+#define INCREMENT_CYCLES 50
 //Analog value of voltage that determines when to stop motor
-#define CURRENT_THRESHOLD 100
+
+#define CURRENT_THRESHOLD 500 //1 AMP with 1OOhm resistor
 
 uint8_t duty = 150;
 uint8_t inc = -1;
 
-typedef enum {
+typedef enum{
     OPEN,
     OPENING,
     CLOSED,
     CLOSING
  } moveState;
+
+typedef struct Input_s{
+    uint8_t bI; //button Input on or off stored in the first bit
+    uint16_t mI; //motor Input 8 bit value corelated with motor current
+} Input;
 
 typedef struct State {
     uint8_t changeInState;
@@ -31,20 +37,17 @@ typedef struct State {
 State state;
 
 //Allows for gradient opening and closing
-const uint8_t speedProfile[32] = {
-    150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150
+const uint8_t speedProfile[15] = {
+    150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150
 };
 
-typedef struct Input_s{
-	uint8_t bI; //button Input on or off stored in the first bit
-	uint16_t mI; //motor Input 8 bit value corelated with motor current
-} Input;
+
 
 
 //Blocks until ADC is completed
 uint16_t getMCurrent(void){
     start_adc();
-    while (get_adc_running()) {
+    while (adc_is_running()) {
         
     }
 	return get_value();
@@ -81,7 +84,7 @@ Input getInput(void){
 void getNextState(Input* in, State* state){
     if (in->bI == 0) {
     	switch (state->state) {
-    		case OPEN: //Follow through to OPENING
+    		case OPEN:
     		case OPENING:
     			state->state = CLOSING;
     			state->count = 0;
@@ -89,12 +92,15 @@ void getNextState(Input* in, State* state){
                 state->changeInState = 1;
     			break;
     		case CLOSING:
-            	if (in->mI < CURRENT_THRESHOLD) {
+            	if (1){//in->mI < CURRENT_THRESHOLD) {
                 	state->count++;
                     state->closeCount++;
                 	if (state->count > INCREMENT_CYCLES){
+                        stopBrake();
+                        cli();
+                        break;
                     	state->count = 0;
-                    	if (state->profIndex < sizeof(speedProfile)/sizeof(speedProfile[0])) {
+                    	if (state->profIndex < sizeof(speedProfile)/sizeof(*speedProfile)) {
                         	state->profIndex ++;
                     	}
                 	}
@@ -108,12 +114,12 @@ void getNextState(Input* in, State* state){
     	}
     } else {
     	switch (state->state) {
-    		case CLOSED: //Follow through to closed
+    		case CLOSED:
             case CLOSING:
                 state->state = OPENING;
                 state->changeInState = 1;
                 state->count = 0;
-                state->profIndex = sizeof(speedProfile)/sizeof(speedProfile[0]) - 1;
+                state->profIndex = sizeof(speedProfile)/sizeof(*speedProfile) - 1;
                 break;
     		case OPENING:
                 if (state->closeCount > 0) {
@@ -154,25 +160,21 @@ void doAction(State* state) {
     }
 }
 
-//Interupt function for when Timer 1 gets a compare match, or is cleared
+//Interrupt when Timer 0 overflows
 //Gets input, finds next state, and does required action
-//ISR(TIM1_COMPB_vect) {
-ISR(TIM1_OVF_vect) {
-    disable_interrupt();
+ISR(TIM0_OVF_vect) {
     Input i = getInput();
     getNextState(&i, &state);
     if (state.changeInState) {
         state.changeInState = 1;
         doAction(&state);
     }
-    reset_timer();
-    enable_interrupt();
 }
 
 
 
 void initTimers(void) {
-	set_up_timer(PWM_OVERFLOW);
+	set_up_timer1(PWM_OVERFLOW);
 }
 
 void initADC(void) {
@@ -199,29 +201,31 @@ void init(void) {
 	sei();
 }
 
+
+//TODO Button stabalization, Threshold voltage, Unbrake timing, speed profile, 
+//**maybe seperate timers so that timer 1 is only pwm and timer 0 is interrupts** IMPLEMENTED
 int main (void){
     init();
+ //    initIO();
+ //    initADC();
 
-    uint8_t t = 0;
-    uint8_t duty = 150;
-    uint8_t count = 0;
-	while(1) {
-        // Input i = getInput();
-        // if (!i.bI && !t) {
-        //     duty = 150;
-        //     closeBrake(duty);
-        //     t = 1;
-        // } else if(i.bI && t) {
-        //     stopBrake();
-        //     t = 0;
-        // } else if(!i.bI && t && duty > 10) {
-        //     count++;
-        //     if (count > 100) {
-        //         count = 0;
-        //         duty--;
-        //         closeBrake(duty);
-        //     }
-        // }
-	} 
+ //    set_enable_high();
+ //    set_out1_high();
+ //    _delay_ms(2000);
+	// while(1) {
+ //        if (getMCurrent() > CURRENT_THRESHOLD) {
+ //            //ADMUX &= ~(1 << ADEN);
+ //            set_enable_low();
+ //            _delay_ms(2000);
+ //            set_enable_high();
+ //            _delay_ms(1000);
+ //            //ADMUX |= (1 << ADEN);
+ //        }
+	// } 
+
+    while(1) {
+
+    }
+
     return 1;
 }
