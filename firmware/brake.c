@@ -21,7 +21,7 @@ typedef enum{
     CLOSING
  } moveState;
 
-typedef struct Input_s{
+typedef struct Input{
     uint8_t bI; //button Input on or off stored in the first bit
     uint16_t mI; //motor Input 8 bit value corelated with motor current
 } Input;
@@ -40,9 +40,6 @@ State state;
 const uint8_t speedProfile[15] = {
     150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150
 };
-
-
-
 
 //Blocks until ADC is completed
 uint16_t getMCurrent(void){
@@ -96,9 +93,6 @@ void getNextState(Input* in, State* state){
                 	state->count++;
                     state->closeCount++;
                 	if (state->count > INCREMENT_CYCLES){
-                        stopBrake();
-                        cli();
-                        break;
                     	state->count = 0;
                     	if (state->profIndex < sizeof(speedProfile)/sizeof(*speedProfile)) {
                         	state->profIndex ++;
@@ -171,8 +165,6 @@ ISR(TIM0_OVF_vect) {
     }
 }
 
-
-
 void initTimers(void) {
 	set_up_timer1(PWM_OVERFLOW);
 }
@@ -180,7 +172,6 @@ void initTimers(void) {
 void initADC(void) {
     set_up_adc();
 }
-
 
 void initIO(void) {
 	set_up_input();
@@ -201,27 +192,10 @@ void init(void) {
 	sei();
 }
 
-
 //TODO Button stabalization, Threshold voltage, Unbrake timing, speed profile, 
 //**maybe seperate timers so that timer 1 is only pwm and timer 0 is interrupts** IMPLEMENTED
 int main (void){
     init();
- //    initIO();
- //    initADC();
-
- //    set_enable_high();
- //    set_out1_high();
- //    _delay_ms(2000);
-	// while(1) {
- //        if (getMCurrent() > CURRENT_THRESHOLD) {
- //            //ADMUX &= ~(1 << ADEN);
- //            set_enable_low();
- //            _delay_ms(2000);
- //            set_enable_high();
- //            _delay_ms(1000);
- //            //ADMUX |= (1 << ADEN);
- //        }
-	// } 
 
     while(1) {
 

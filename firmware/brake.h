@@ -32,7 +32,7 @@
 
 //No prescaling and overflow interrupt enabled
 #define set_up_timer0() { \
-	TCCR0B |= (1 << CS00); \
+	TCCR0B |= (1 << CS01); \
 	TIMSK |= (1 << TOIE0); \
 }
 
