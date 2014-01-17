@@ -21,7 +21,7 @@ typedef enum{
     CLOSING
  } moveState;
 
-typedef struct Input{
+typedef struct Input_s{
     uint8_t bI; //button Input on or off stored in the first bit
     uint16_t mI; //motor Input 8 bit value corelated with motor current
 } Input;
@@ -40,6 +40,9 @@ State state;
 const uint8_t speedProfile[15] = {
     150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150
 };
+
+
+
 
 //Blocks until ADC is completed
 uint16_t getMCurrent(void){
@@ -93,6 +96,9 @@ void getNextState(Input* in, State* state){
                 	state->count++;
                     state->closeCount++;
                 	if (state->count > INCREMENT_CYCLES){
+                        stopBrake();
+                        cli();
+                        break;
                     	state->count = 0;
                     	if (state->profIndex < sizeof(speedProfile)/sizeof(*speedProfile)) {
                         	state->profIndex ++;
@@ -154,24 +160,28 @@ void doAction(State* state) {
     }
 }
 
-//Interrupt when Timer 0 overflows
+//Interupt function for when Timer 1 gets a compare match, or is cleared
 //Gets input, finds next state, and does required action
-ISR(TIM0_OVF_vect) {
+ISR(TIM1_OVF_vect) {
     Input i = getInput();
     getNextState(&i, &state);
     if (state.changeInState) {
         state.changeInState = 1;
         doAction(&state);
     }
+    //reset_timer();
 }
 
+
+
 void initTimers(void) {
-	set_up_timer1(PWM_OVERFLOW);
+	set_up_timer(PWM_OVERFLOW);
 }
 
 void initADC(void) {
     set_up_adc();
 }
+
 
 void initIO(void) {
 	set_up_input();
@@ -192,10 +202,26 @@ void init(void) {
 	sei();
 }
 
-//TODO Button stabalization, Threshold voltage, Unbrake timing, speed profile, 
-//**maybe seperate timers so that timer 1 is only pwm and timer 0 is interrupts** IMPLEMENTED
+
+//TODO Button stabalization, Threshold voltage, Unbrake timing, speed profile
 int main (void){
     init();
+ //    initIO();
+ //    initADC();
+
+ //    set_enable_high();
+ //    set_out1_high();
+ //    _delay_ms(2000);
+	// while(1) {
+ //        if (getMCurrent() > CURRENT_THRESHOLD) {
+ //            //ADMUX &= ~(1 << ADEN);
+ //            set_enable_low();
+ //            _delay_ms(2000);
+ //            set_enable_high();
+ //            _delay_ms(1000);
+ //            //ADMUX |= (1 << ADEN);
+ //        }
+	// } 
 
     while(1) {
 
