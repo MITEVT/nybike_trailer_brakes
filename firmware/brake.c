@@ -160,21 +160,22 @@ void doAction(State* state) {
     }
 }
 
-//Interrupt when Timer 0 overflows
+//Interupt function for when Timer 1 gets a compare match, or is cleared
 //Gets input, finds next state, and does required action
-ISR(TIM0_OVF_vect) {
+ISR(TIM1_OVF_vect) {
     Input i = getInput();
     getNextState(&i, &state);
     if (state.changeInState) {
         state.changeInState = 1;
         doAction(&state);
     }
+    //reset_timer();
 }
 
 
 
 void initTimers(void) {
-	set_up_timer1(PWM_OVERFLOW);
+	set_up_timer(PWM_OVERFLOW);
 }
 
 void initADC(void) {
@@ -202,8 +203,7 @@ void init(void) {
 }
 
 
-//TODO Button stabalization, Threshold voltage, Unbrake timing, speed profile, 
-//**maybe seperate timers so that timer 1 is only pwm and timer 0 is interrupts** IMPLEMENTED
+//TODO Button stabalization, Threshold voltage, Unbrake timing, speed profile
 int main (void){
     init();
  //    initIO();
