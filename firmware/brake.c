@@ -35,6 +35,8 @@ const uint8_t speedProfile[32] = {
     150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150
 };
 
+const uint8_t PROFILE_SIZE = 32;
+
 typedef struct Input_s{
 	uint8_t bI; //button Input on or off stored in the first bit
 	uint16_t mI; //motor Input 8 bit value corelated with motor current
@@ -89,12 +91,12 @@ void getNextState(Input* in, State* state){
                 state->changeInState = 1;
     			break;
     		case CLOSING:
-            	if (in->mI < CURRENT_THRESHOLD) {
+            	if (1){//in->mI < CURRENT_THRESHOLD) {
                 	state->count++;
                     state->closeCount++;
                 	if (state->count > INCREMENT_CYCLES){
                     	state->count = 0;
-                    	if (state->profIndex < sizeof(speedProfile)/sizeof(speedProfile[0])) {
+                    	if (state->profIndex < PROFILE_SIZE) {
                         	state->profIndex ++;
                     	}
                 	}
@@ -111,20 +113,20 @@ void getNextState(Input* in, State* state){
     		case CLOSED: //Follow through to closed
             case CLOSING:
                 state->state = OPENING;
-                state->changeInState = 1;
                 state->count = 0;
-                state->profIndex = sizeof(speedProfile)/sizeof(speedProfile[0]) - 1;
+                state->profIndex = PROFILE_SIZE - 1;
+                state->changeInState = 1;
                 break;
     		case OPENING:
                 if (state->closeCount > 0) {
-                	state->count++;
-                    state->closeCount--;
-                	if (state->count > INCREMENT_CYCLES) {
-                    	state->count = 0;
-                    	if (state->profIndex > -1) {
-                        	state->profIndex--;
-                   		}
-                	}
+                	//state->count++;
+                    //state->closeCount--;
+                	// if (state->count > INCREMENT_CYCLES) {
+                 //    	state->count = 0;
+                 //    	if (state->profIndex > 0) {
+                 //        	state->profIndex--;
+                 //   		}
+                	// }
                 } else {
                     state->state = OPEN;
                     state->changeInState = 1;
@@ -158,15 +160,12 @@ void doAction(State* state) {
 //Gets input, finds next state, and does required action
 //ISR(TIM1_COMPB_vect) {
 ISR(TIM1_OVF_vect) {
-    disable_interrupt();
     Input i = getInput();
     getNextState(&i, &state);
     if (state.changeInState) {
         state.changeInState = 1;
         doAction(&state);
     }
-    reset_timer();
-    enable_interrupt();
 }
 
 
