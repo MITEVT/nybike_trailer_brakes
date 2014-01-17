@@ -41,13 +41,7 @@ State state;
 //     150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150
 // };
 const uint8_t speedProfile[1] = {159};
-
-
 const uint8_t PROFILE_SIZE = 1;
-
-
-
-
 
 //Blocks until ADC is completed
 uint16_t getMCurrent(void){
@@ -62,12 +56,12 @@ void setSpeed(uint8_t speed) {
     set_duty(speed);
 }
 
-void closeBrake() {
+void closeBrake(void) {
     set_out1_high();
     set_out2_low();
 }
 
-void openBrake() {
+void openBrake(void) {
     set_out1_low();
     set_out2_high();
 }
@@ -101,9 +95,6 @@ void getNextState(Input* in, State* state){
                 	state->count++;
                     state->closeCount++;
                 	if (state->count > INCREMENT_CYCLES){
-                        stopBrake();
-                        cli();
-                        break;
                     	state->count = 0;
                     	if (state->profIndex < PROFILE_SIZE) {
                         	state->profIndex ++;
@@ -168,8 +159,6 @@ void doAction(State* state) {
 
 //Interupt function for when Timer 1 gets a compare match, or is cleared
 //Gets input, finds next state, and does required action
-ISR(TIM1_OVF_vect) {
-//ISR(TIM1_COMPB_vect) {
 ISR(TIM0_OVF_vect) {
     Input i = getInput();
     getNextState(&i, &state);
@@ -215,26 +204,9 @@ void init(void) {
 //TODO Button stabalization, Threshold voltage, Unbrake timing, speed profile
 int main (void){
     init();
- //    initIO();
- //    initADC();
-
- //    set_enable_high();
- //    set_out1_high();
- //    _delay_ms(2000);
-	// while(1) {
- //        if (getMCurrent() > CURRENT_THRESHOLD) {
- //            //ADMUX &= ~(1 << ADEN);
- //            set_enable_low();
- //            _delay_ms(2000);
- //            set_enable_high();
- //            _delay_ms(1000);
- //            //ADMUX |= (1 << ADEN);
- //        }
-	// } 
-
     while(1) {
 
     }
-
     return 1;
 }
+
