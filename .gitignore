@@ -42,6 +42,7 @@ eagle.epf
 # Object files
 *.o
 *.ko
+*.hex
 
 # Map Files
 *.map
