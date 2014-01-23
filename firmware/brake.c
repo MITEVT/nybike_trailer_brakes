@@ -9,7 +9,13 @@
 #define INCREMENT_CYCLES 50
 //Analog value of voltage that determines when to stop motor
 
-#define CURRENT_THRESHOLD 500 //1 AMP with 1OOhm resistor
+#define CURRENT_THRESHOLD 370 //At running it creates 1.6V drop
+#define REVERSE_CURRENT_THRESHOLD 350
+
+#define SENSE_HOLD_OFF 50
+#define REVERSE_SENSE_HOLD_OFF 50
+
+#define REVERSE_TAP
 
 uint8_t duty = 150;
 uint8_t inc = -1;
@@ -40,8 +46,8 @@ State state;
 // const uint8_t speedProfile[32] = {
 //     150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150, 150
 // };
-const uint8_t speedProfile[1] = {159};
-const uint8_t PROFILE_SIZE = 1;
+const uint8_t speedProfile[2] = {159, 159};
+const uint8_t PROFILE_SIZE = 2;
 
 //Blocks until ADC is completed
 uint16_t getMCurrent(void){
@@ -91,7 +97,7 @@ void getNextState(Input* in, State* state){
                 state->changeInState = 1;
     			break;
     		case CLOSING:
-            	if (in->mI < CURRENT_THRESHOLD || (state->count < 100 && state->profIndex == 0)) {
+            	if (in->mI < CURRENT_THRESHOLD || (state->count < SENSE_HOLD_OFF && state->profIndex == 0)) {
                 	state->count++;
                     state->closeCount++;
                 	if (state->count > INCREMENT_CYCLES){
@@ -118,7 +124,11 @@ void getNextState(Input* in, State* state){
                 state->changeInState = 1;
                 break;
     		case OPENING:
+                #ifndef REVERSE_TAP
                 if (state->closeCount > 0) {
+                #else
+                if ((in->mI < REVERSE_CURRENT_THRESHOLD && state->closeCount > 0) || (state->count < REVERSE_SENSE_HOLD_OFF && state->profIndex == PROFILE_SIZE - 1)) {
+                #endif
                 	state->count++;
                     state->closeCount--;
                 	if (state->count > INCREMENT_CYCLES) {
@@ -129,6 +139,7 @@ void getNextState(Input* in, State* state){
                 	}
                 } else {
                     state->state = OPEN;
+                    state->closeCount = 0;
                     state->changeInState = 1;
                 }
     			break;
