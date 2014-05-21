@@ -10,4 +10,5 @@ Integrated H-Bridge L 298N used.
 Directory Structure
 ---------------------
 firmware - directory containing all firmware for the project
+
 hardware - contains part specifications and board layouts
