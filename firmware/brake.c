@@ -1,5 +1,15 @@
 #include "brake.h"
 
+/* **************************************
+ * Instruction to change strength:
+ * 
+ * Change CURRENT_THRESHOLD
+ * Higher number means higher cut off current
+ * Be careful, too high and it won't ever cut off, causing many amps to be continuosly drawn, small fire may ensue
+ * CHANGE NOTHING ELSE
+ * **************************************/
+
+
 //PWM defines
 #define PWM_OVERFLOW 159
 #define CLOSE_DUTY 30
